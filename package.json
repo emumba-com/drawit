@@ -1,7 +1,7 @@
 {
   "name": "drawit",
-  "version": "1.0.0",
-  "description": "drawit React component",
+  "version": "1.0.2",
+  "description": "A React library to easily create diagrams",
   "main": "lib/index.js",
   "module": "es/index.js",
   "files": [
@@ -27,11 +27,21 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
   },
-  "author": "",
-  "homepage": "",
-  "license": "MIT",
-  "repository": "",
+  "author": "Umar Ashfaq <umar.mughal2@gmail.com> (http://www.emumba.com)",
+  "homepage": "https://github.com/emumba-com/drawit#readme",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emumba-com/drawit.git"
+  },
   "keywords": [
-    "react-component"
-  ]
+    "react-component",
+    "react",
+    "diagrams",
+    "html",
+    "svg"
+  ],
+  "bugs": {
+    "url": "https://github.com/emumba-com/drawit/issues"
+  }
 }
