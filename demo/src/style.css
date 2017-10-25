@@ -1,0 +1,14 @@
+.Drawit--Diagram {
+    border: 0.1rem solid red;
+    height: 30rem;
+}
+
+.Drawit--DefaultNode {
+    display: inline-block;
+    border: 0.05rem solid #999;
+    border-radius: 0.2rem;
+    padding: 1rem;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    color: #666;
+}

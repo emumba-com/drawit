@@ -14,3 +14,18 @@ Describe drawit here.
 
 [coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
 [coveralls]: https://coveralls.io/github/user/repo
+
+# Features
+- No Dependencies
+- Tiny Size
+- Interactive
+- Responsive
+- Support for Touch Devices
+- Easy to Use
+- Powerful
+
+# API
+API documentation is grouped by available components.
+
+## Diagram
+Diagram is the root component of the system.
