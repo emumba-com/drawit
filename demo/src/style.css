@@ -3,6 +3,10 @@
     height: 30rem;
 }
 
+.Drawit--Diagram--Nodes {
+    position: relative;
+}
+
 .Drawit--DefaultNode {
     display: inline-block;
     border: 0.05rem solid #999;
@@ -11,4 +15,14 @@
     font-size: 0.8rem;
     font-family: sans-serif;
     color: #666;
+}
+
+.Drawit--Draggable {
+    position: absolute;
+    cursor: move;
+}
+
+.Drawit--DefaultNode:hover {
+    border: 0.05rem solid #666;
+    color: #333;
 }

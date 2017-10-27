@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import Node from './Node'
+import LayerNodes from './LayerNodes'
 import { makeUID } from './utils'
 
 export default class Diagram extends React.Component {
@@ -9,13 +10,11 @@ export default class Diagram extends React.Component {
         children: PropTypes.any
     }
 
-    constructor(props) {
-        super(props)
-        this.state = {
-            nodes: [],
-            links: []
-        }
+    state = {
+        nodes: [],
+        links: []
     }
+
     addNode( model ) {
         console.log('Adding node: ', model)
 
@@ -41,18 +40,20 @@ export default class Diagram extends React.Component {
     render() {
         const { nodes } = this.state
         const { children } = this.props
+
         const child = children.find(child => child.type === Node)
-        const { component: NodeComponent } = child.props
+
+        if ( !child ) {
+            throw new Error(`Node child is required`)
+        }
+
+        const { component } = child.props
         
         // console.log('NodeComponent: ', NodeComponent)
 
         return (
             <div className="Drawit--Diagram">
-                <div className="Drawit--Diagram--Nodes">
-                    {
-                        nodes.map(node => <NodeComponent key={node.id} model={node}/>)
-                    }
-                </div>
+                <LayerNodes nodes={nodes} component={component}/>
                 <div className="Drawit--Diagram--Links">
                 </div>
             </div>
