@@ -29,8 +29,11 @@ export default class Diagram extends React.Component {
 
         // can i modify model? no
         // const { id, type } = model
-        const isNew = !model.id
-        const nextModel = isNew ? { id: makeUID(), ...model } : model
+        const nextModel =
+            Object.assign({
+                id: makeUID(),
+                type: 'default'
+            }, model)
 
         // if new, assign id
         
@@ -61,23 +64,31 @@ export default class Diagram extends React.Component {
 
     render() {
         const { value, children } = this.props
-        const { nodes = [] } = value
+        const { nodes: nodeModels = [] } = value
+        
+        console.log('children: ', children)
 
-        const child = children.find(child => child.type === Node)
+        const components = 
+            children
+                .filter(child => child.type === Node)
+                .reduce((output, node) => {
+                    const { type, component } = node.props
+                    output[type] = component
 
-        if ( !child ) {
-            throw new Error(`Node child is required`)
+                    return output
+                }, {})
+
+        if ( !Object.keys(components).length ) {
+            throw new Error(`At least one Node is required`)
         }
 
-        const { component } = child.props
-        
         // console.log('NodeComponent: ', NodeComponent)
 
         return (
             <div className="Drawit--Diagram">
                 <LayerNodes
-                    nodes={nodes}
-                    component={component}
+                    nodes={nodeModels}
+                    components={components}
                     onChangeNodeModel={ this.handleChangeNodeModel }/>
                 <div className="Drawit--Diagram--Links">
                 </div>

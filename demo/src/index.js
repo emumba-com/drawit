@@ -8,7 +8,8 @@ import {
   DefaultNode,
   DefaultLink
  } from '../../src'
-
+import NodeCircle from './NodeCircle'
+import NodeDiamond from './NodeDiamond'
 import './style.css'
 
 const LS_KEY = 'drawit-diagram-model'
@@ -36,6 +37,18 @@ class Demo extends Component {
       title: 'Test Node'
     })
   }
+  handleClickAddCircle = e => {
+    this.refs.diagram.addNode({
+      type: 'circle',
+      title: 'Circle'
+    })
+  }
+  handleClickAddDiamond = e => {
+    this.refs.diagram.addNode({
+      type: 'diamond',
+      title: 'Diamond'
+    })
+  }
   render() {
     const { value } = this.state
 
@@ -43,8 +56,12 @@ class Demo extends Component {
       <div>
         <h1>drawit Demo</h1>
         <button onClick={this.handleClickAddNode}>Add Node</button>
+        <button onClick={this.handleClickAddCircle}>Add Circle</button>
+        <button onClick={this.handleClickAddDiamond}>Add Diamond</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange}>
           <Node type="default" component={ DefaultNode }/>
+          <Node type="circle" component={ NodeCircle }/>
+          <Node type="diamond" component={ NodeDiamond }/>
           <Link type="default" component={ DefaultLink }/>
         </Diagram>
       </div>

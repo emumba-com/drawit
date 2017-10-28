@@ -1,3 +1,25 @@
+.Node-Circle {
+    border: 0.05rem solid #999;
+    border-radius: 2rem;
+    padding: 1rem;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    color: #666;
+    width: 2rem;
+    height: 2rem;
+}
+
+.Node-Diamond {
+    transform: rotateZ(45deg);
+    border: 0.05rem solid #999;
+    padding: 1rem;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    color: #666;
+    width: 2rem;
+    height: 2rem;
+}
+
 .Drawit--Diagram {
     border: 0.1rem solid red;
     height: 30rem;

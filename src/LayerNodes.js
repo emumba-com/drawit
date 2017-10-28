@@ -7,7 +7,7 @@ export default class LayerNodes extends React.Component {
 
     static propTypes = {
         nodes: PropTypes.array,
-        component: PropTypes.func,
+        components: PropTypes.object,
         onChangeNodeModel: PropTypes.func
     }
     componentDidMount() {
@@ -22,19 +22,29 @@ export default class LayerNodes extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { nodes, component: NodeComponent, onChangeNodeModel } = this.props
+        const { nodes, components, onChangeNodeModel } = this.props
 
         return (
             <div className="Drawit--Diagram--Nodes">
             {
-                nodes.map(model =>
-                    <NodeComponent
-                        key={model.id}
-                        model={model}
-                        __drawit__offsetX={offsetX}
-                        __drawit__offsetY={offsetY}
-                        __drawit__onChange={onChangeNodeModel}
-                    />)
+                nodes.map(model => {
+                    const { type } = model
+                    const NodeComponent = components[type]
+
+                    if ( !NodeComponent ) {
+                        throw new Error(`Couldn't find a component for type: ${type}`)
+                    }
+
+                    return (
+                        <NodeComponent
+                            key={model.id}
+                            model={model}
+                            __drawit__offsetX={offsetX}
+                            __drawit__offsetY={offsetY}
+                            __drawit__onChange={onChangeNodeModel}
+                        />
+                    )
+                })
             }
             </div>
         )
