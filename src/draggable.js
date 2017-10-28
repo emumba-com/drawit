@@ -70,7 +70,18 @@ class Draggable extends React.Component {
 
 export default options => WrappedElement =>
     class DraggableWrapper extends React.Component {
-        state = { x: 0, y: 0, isDragging: false }
+        constructor(props) {
+            super(props)
+            
+            const { model } = props
+            const { x = 0, y = 0 } = model
+
+            this.state = {
+                x,
+                y,
+                isDragging: false
+            }
+        }
 
         handleDragStart = e => {
             this.setState({
@@ -86,7 +97,13 @@ export default options => WrappedElement =>
             this.setState({
                 isDragging: false
             })
+
+            const { x, y } = this.state
+            const { model, __drawit__onChange } = this.props
+            const nextModel = {...model, x, y}
+            __drawit__onChange(nextModel)
         }
+        
         render() {
             const { x, y, isDragging } = this.state
             const { __drawit__offsetX, __drawit__offsetY, ...rest } = this.props

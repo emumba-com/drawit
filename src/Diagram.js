@@ -12,10 +12,19 @@ export default class Diagram extends React.Component {
         onChange: PropTypes.func
     }
 
+    updateValue(nextProps) {
+        const { value, onChange = () => {} } = this.props
+
+        onChange({
+            ...value,
+            ...nextProps
+        })
+    }
+
     addNode( model ) {
         console.log('Adding node: ', model)
 
-        const { value, onChange = () => {} } = this.props
+        const { value } = this.props
         const { nodes = [] } = value
 
         // can i modify model? no
@@ -31,13 +40,25 @@ export default class Diagram extends React.Component {
 
         // ensure a component for give 'type' exists
 
-        onChange({
-            ...value,
+        this.updateValue({
             nodes: [...nodes, nextModel]
         })
 
         // return modified model
     }
+
+    handleChangeNodeModel = model => {
+        const { value: { nodes } } = this.props
+        const nextNodes = [...nodes]
+
+        const node = nextNodes.find(n => n.id === model.id)
+        Object.assign(node, model)
+
+        this.updateValue({
+            nodes: nextNodes
+        })
+    }
+
     render() {
         const { value, children } = this.props
         const { nodes = [] } = value
@@ -56,7 +77,8 @@ export default class Diagram extends React.Component {
             <div className="Drawit--Diagram">
                 <LayerNodes
                     nodes={nodes}
-                    component={component}/>
+                    component={component}
+                    onChangeNodeModel={ this.handleChangeNodeModel }/>
                 <div className="Drawit--Diagram--Links">
                 </div>
             </div>
