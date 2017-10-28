@@ -11,23 +11,26 @@ import {
 
 import './style.css'
 
+const delay = (f, timestamp) => (...args) =>
+  setTimeout(() => f(...args), timestamp)
+
 class Demo extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      value: ''
+      value: {}
     }
 
     window.demo = this
   }
-  componentDidMount() {
-    this.refs.diagram.addNode({
-      title: 'Test Node 1'
-    })
-  }
   handleChange = (value, e) => {
     this.setState({ value })
+  }
+  handleClickAddNode = e => {
+    this.refs.diagram.addNode({
+      title: 'Test Node'
+    })
   }
   render() {
     const { value } = this.state
@@ -35,6 +38,7 @@ class Demo extends Component {
     return (
       <div>
         <h1>drawit Demo</h1>
+        <button onClick={this.handleClickAddNode}>Add Node</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange}>
           <Node type="default" component={ DefaultNode }/>
           <Link type="default" component={ DefaultLink }/>
