@@ -21,7 +21,13 @@ export default class LayerNodes extends React.Component {
         return (
             <div className="Drawit--Diagram--Nodes">
             {
-                nodes.map(node => <NodeComponent key={node.id} model={node} __drawit__offsetX={offsetX} __drawit__offsetY={offsetY}/>)
+                nodes.map(node =>
+                    <NodeComponent
+                        key={node.id}
+                        model={node}
+                        __drawit__offsetX={offsetX}
+                        __drawit__offsetY={offsetY}
+                    />)
             }
             </div>
         )

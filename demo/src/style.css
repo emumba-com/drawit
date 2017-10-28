@@ -23,9 +23,14 @@
 .Drawit--Draggable {
     position: absolute;
     cursor: move;
+    background: #fff;
 }
 
 .Drawit--DefaultNode:hover {
     border: 0.05rem solid #666;
     color: #333;
+}
+
+.Drawit--DefaultNode--isDragging {
+    box-shadow: 1px 1px 4px #999;
 }

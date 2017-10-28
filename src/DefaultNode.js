@@ -3,10 +3,10 @@ import draggable from './draggable'
 
 export default draggable()(class DefaultNode extends React.Component {
     render() {
-        const { model: { title } } = this.props
+        const { model: { title }, isDragging } = this.props
 
         return (
-            <div className="Drawit--DefaultNode">
+            <div className={['Drawit--DefaultNode', isDragging ? 'Drawit--DefaultNode--isDragging' : ''].join(' ')}>
                 <span>{ title }</span>
             </div>
         )
