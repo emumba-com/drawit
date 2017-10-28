@@ -11,6 +11,8 @@ import {
 
 import './style.css'
 
+const LS_KEY = 'drawit-diagram-model'
+
 const delay = (f, timestamp) => (...args) =>
   setTimeout(() => f(...args), timestamp)
 
@@ -19,13 +21,15 @@ class Demo extends Component {
     super(props)
 
     this.state = {
-      value: {}
+      value: JSON.parse(localStorage.getItem(LS_KEY) || '{}')
     }
 
     window.demo = this
   }
   handleChange = (value, e) => {
     this.setState({ value })
+
+    localStorage.setItem(LS_KEY, JSON.stringify(value))
   }
   handleClickAddNode = e => {
     this.refs.diagram.addNode({
