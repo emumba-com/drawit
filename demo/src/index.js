@@ -3,10 +3,12 @@ import {render} from 'react-dom'
 
 import {
   Diagram,
+  Port,
   Node,
   Link,
   DefaultNode,
-  DefaultLink
+  DefaultLink,
+  DefaultPort
  } from '../../src'
 import NodeCircle from './NodeCircle'
 import NodeDiamond from './NodeDiamond'
@@ -59,7 +61,9 @@ class Demo extends Component {
         <button onClick={this.handleClickAddCircle}>Add Circle</button>
         <button onClick={this.handleClickAddDiamond}>Add Diamond</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange}>
-          <Node type="default" component={ DefaultNode }/>
+          <Node type="default" component={ DefaultNode }>
+            <Port top={0} right={0} component={ DefaultPort }/>
+          </Node>
           <Node type="circle" component={ NodeCircle }/>
           <Node type="diamond" component={ NodeDiamond }/>
           <Link type="default" component={ DefaultLink }/>

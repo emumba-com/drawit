@@ -1,5 +1,7 @@
 export { default as Diagram } from './Diagram'
 export { default as Node } from './Node'
 export { default as Link } from './Link'
+export { default as Port } from './Port'
 export { default as DefaultNode } from './DefaultNode'
 export { default as DefaultLink } from './DefaultLink'
+export { default as DefaultPort } from './DefaultPort'
