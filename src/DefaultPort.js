@@ -7,7 +7,6 @@ export default class DefaultPort extends React.Component {
 
         return (
             <div className={['Drawit--DefaultPort'].join(' ')}>
-                Default Port
             </div>
         )
     }

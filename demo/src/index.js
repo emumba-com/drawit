@@ -62,10 +62,17 @@ class Demo extends Component {
         <button onClick={this.handleClickAddDiamond}>Add Diamond</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange}>
           <Node type="default" component={ DefaultNode }>
-            <Port top={0} right={0} component={ DefaultPort }/>
+            <Port top="calc(50% - 0.2rem)" left="-0.2rem" component={ DefaultPort }/>
+            <Port top="calc(50% - 0.2rem)" right="-0.2rem" component={ DefaultPort }/>
           </Node>
-          <Node type="circle" component={ NodeCircle }/>
-          <Node type="diamond" component={ NodeDiamond }/>
+          <Node type="circle" component={ NodeCircle }>
+            <Port top="calc(50% - 0.2rem)" left="-0.2rem" component={ DefaultPort }/>
+            <Port top="calc(50% - 0.2rem)" right="-0.2rem" component={ DefaultPort }/>
+          </Node>
+          <Node type="diamond" component={ NodeDiamond }>
+            <Port top="calc(50% - 0.2rem)" left="-1rem" component={ DefaultPort }/>
+            <Port top="calc(50% - 0.2rem)" right="-1rem" component={ DefaultPort }/>
+          </Node>
           <Link type="default" component={ DefaultLink }/>
         </Diagram>
       </div>

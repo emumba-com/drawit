@@ -25,7 +25,7 @@ export default draggable()(class NodeShell extends React.Component {
             <div className="Drawit--NodeShell">
                 <NodeComponent model={model} isDragging={isDragging}/>
                 {
-                    ports.map(port => <PortShell port={port}/>)
+                    ports.map((port, index) => <PortShell key={index} port={port}/>)
                 }
             </div>
         )

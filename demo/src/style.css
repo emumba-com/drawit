@@ -36,6 +36,10 @@
 
 }
 
+.Drawit--PortShell {
+    position: absolute;
+}
+
 .Drawit--DefaultNode {
     border: 0.05rem solid #999;
     border-radius: 0.2rem;
@@ -58,4 +62,16 @@
 
 .Drawit--DefaultNode--isDragging {
     box-shadow: 1px 1px 4px #999;
+}
+
+.Drawit--DefaultPort {
+    border: 0.05rem solid #999;
+    border-radius: 0.4rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: white;
+}
+
+.Drawit--DefaultPort:hover {
+    background: #ccc;
 }

@@ -7,7 +7,13 @@ export default class PortShell extends React.Component {
     }
     render() {
         const { port } = this.props
-        const { component: PortComponent } = port.props
-        return <PortComponent/>
+        const { component: PortComponent, top, left, bottom, right } = port.props
+        const style = { top, left, right, bottom }
+
+        return (
+            <div className="Drawit--PortShell" style={style}>
+                <PortComponent />
+            </div>
+        )
     }
 }
