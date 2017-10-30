@@ -32,8 +32,11 @@
     height: 100%;
 }
 
+.Drawit--NodeShell {
+
+}
+
 .Drawit--DefaultNode {
-    display: inline-block;
     border: 0.05rem solid #999;
     border-radius: 0.2rem;
     padding: 1rem;

@@ -99,21 +99,21 @@ export default options => WrappedElement =>
             })
 
             const { x, y } = this.state
-            const { model, __drawit__onChange } = this.props
+            const { model, onChange } = this.props
             const nextModel = {...model, x, y}
-            __drawit__onChange(nextModel)
+            onChange(nextModel)
         }
-        
+
         render() {
             const { x, y, isDragging } = this.state
-            const { __drawit__offsetX, __drawit__offsetY, ...rest } = this.props
+            const { offsetX, offsetY, ...rest } = this.props
 
             return (
                 <Draggable
                     x={x}
                     y={y}
-                    offsetX={     __drawit__offsetX    }
-                    offsetY={     __drawit__offsetY    }
+                    offsetX={     offsetX    }
+                    offsetY={     offsetY    }
                     onDragStart={ this.handleDragStart }
                     onMove={      this.handleMove      }
                     onDragEnd={   this.handleDragEnd   }>

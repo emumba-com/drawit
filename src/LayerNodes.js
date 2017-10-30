@@ -2,12 +2,24 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 
+import NodeShell from './NodeShell'
+
+const cache = {}
+
+const getNodeByType = (type, children) => {
+    if ( !cache[type] ) {
+        cache[type] = children.find(child => child.props.type === type)
+    }
+
+    return cache[type]
+}
+
 export default class LayerNodes extends React.Component {
     state = { offsetX: 0, offsetY: 0 }
 
     static propTypes = {
-        nodes: PropTypes.array,
-        components: PropTypes.object,
+        models: PropTypes.array,
+        children: PropTypes.any,
         onChangeNodeModel: PropTypes.func
     }
     componentDidMount() {
@@ -22,26 +34,23 @@ export default class LayerNodes extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { nodes, components, onChangeNodeModel } = this.props
+        const { models, children, onChangeNodeModel } = this.props
 
         return (
             <div className="Drawit--Diagram--Nodes">
             {
-                nodes.map(model => {
+                models.map(model => {
                     const { type } = model
-                    const NodeComponent = components[type]
-
-                    if ( !NodeComponent ) {
-                        throw new Error(`Couldn't find a component for type: ${type}`)
-                    }
+                    const node = getNodeByType(type, children)
 
                     return (
-                        <NodeComponent
+                        <NodeShell
                             key={model.id}
                             model={model}
-                            __drawit__offsetX={offsetX}
-                            __drawit__offsetY={offsetY}
-                            __drawit__onChange={onChangeNodeModel}
+                            node={node}
+                            offsetX={offsetX}
+                            offsetY={offsetY}
+                            onChange={onChangeNodeModel}
                         />
                     )
                 })

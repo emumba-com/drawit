@@ -65,31 +65,23 @@ export default class Diagram extends React.Component {
     render() {
         const { value, children } = this.props
         const { nodes: nodeModels = [] } = value
+
+        /*
+        .reduce((output, node) => {
+            const { type, component } = node.props
+            output[type] = component
+
+            return output
+        }, {})
+        */
         
-        console.log('children: ', children)
-
-        const components = 
-            children
-                .filter(child => child.type === Node)
-                .reduce((output, node) => {
-                    const { type, component } = node.props
-                    output[type] = component
-
-                    return output
-                }, {})
-
-        if ( !Object.keys(components).length ) {
-            throw new Error(`At least one Node is required`)
-        }
-
-        // console.log('NodeComponent: ', NodeComponent)
-
         return (
             <div className="Drawit--Diagram">
                 <LayerNodes
-                    nodes={nodeModels}
-                    components={components}
-                    onChangeNodeModel={ this.handleChangeNodeModel }/>
+                    models={nodeModels}
+                    onChangeNodeModel={ this.handleChangeNodeModel }>
+                    { children.filter(child => child.type === Node) }
+                </LayerNodes>
                 <div className="Drawit--Diagram--Links">
                 </div>
             </div>

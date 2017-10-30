@@ -1,7 +1,6 @@
 import React from 'react'
-import draggable from '../../src/draggable'
 
-export default draggable()(class NodeCircle extends React.Component {
+export default class NodeCircle extends React.Component {
     render() {
         const { model: { title }, isDragging } = this.props
 
@@ -11,4 +10,4 @@ export default draggable()(class NodeCircle extends React.Component {
             </div>
         )
     }
-})
+}

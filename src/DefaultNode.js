@@ -1,7 +1,7 @@
 import React from 'react'
 import draggable from './draggable'
 
-export default draggable()(class DefaultNode extends React.Component {
+export default class DefaultNode extends React.Component {
     render() {
         const { model: { title }, isDragging } = this.props
 
@@ -11,4 +11,4 @@ export default draggable()(class DefaultNode extends React.Component {
             </div>
         )
     }
-})
+}
