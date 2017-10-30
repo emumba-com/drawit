@@ -62,6 +62,10 @@
     color: #666;
 }
 
+Drawit--DefaultLink {
+    stroke: #666;
+}
+
 .Drawit--Draggable {
     position: absolute;
     cursor: move;
