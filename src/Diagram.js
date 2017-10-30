@@ -2,7 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import Node from './Node'
+import Link from './Link'
 import LayerNodes from './LayerNodes'
+import LayerLinks from './LayerLinks'
 import { makeUID } from './utils'
 
 export default class Diagram extends React.Component {
@@ -22,8 +24,6 @@ export default class Diagram extends React.Component {
     }
 
     addNode( model ) {
-        console.log('Adding node: ', model)
-
         const { value } = this.props
         const { nodes = [] } = value
 
@@ -50,6 +50,21 @@ export default class Diagram extends React.Component {
         // return modified model
     }
 
+    addLink( model = {} ) {
+        const { value } = this.props
+        const { links = [] } = value
+
+        const nextModel =
+            Object.assign({
+                id: makeUID(),
+                type: 'default'
+            }, model)
+
+        this.updateValue({
+            links: [...links, nextModel]
+        })
+    }
+
     handleChangeNodeModel = model => {
         const { value: { nodes } } = this.props
         const nextNodes = [...nodes]
@@ -62,19 +77,22 @@ export default class Diagram extends React.Component {
         })
     }
 
+    handleChangeLinkModel = model => {
+        const { value: { links } } = this.props
+        const nextLinks = [...links]
+
+        const link = nextLinks.find(n => n.id === model.id)
+        Object.assign(link, model)
+
+        this.updateValue({
+            links: nextLinks
+        })
+    }
+
     render() {
         const { value, children } = this.props
-        const { nodes: nodeModels = [] } = value
+        const { nodes: nodeModels = [], links: linkModels = [] } = value
 
-        /*
-        .reduce((output, node) => {
-            const { type, component } = node.props
-            output[type] = component
-
-            return output
-        }, {})
-        */
-        
         return (
             <div className="Drawit--Diagram">
                 <LayerNodes
@@ -82,8 +100,11 @@ export default class Diagram extends React.Component {
                     onChangeNodeModel={ this.handleChangeNodeModel }>
                     { children.filter(child => child.type === Node) }
                 </LayerNodes>
-                <div className="Drawit--Diagram--Links">
-                </div>
+                <LayerLinks
+                    models={linkModels}
+                    onChangeLinkModel={ this.handleChangeLinkModel }>
+                    { children.filter(child => child.type === Link) }
+                </LayerLinks>
             </div>
         )
     }

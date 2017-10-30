@@ -51,6 +51,9 @@ class Demo extends Component {
       title: 'Diamond'
     })
   }
+  handleClickAddLink = e => {
+    this.refs.diagram.addLink()
+  }
   render() {
     const { value } = this.state
 
@@ -60,6 +63,7 @@ class Demo extends Component {
         <button onClick={this.handleClickAddNode}>Add Node</button>
         <button onClick={this.handleClickAddCircle}>Add Circle</button>
         <button onClick={this.handleClickAddDiamond}>Add Diamond</button>
+        <button onClick={this.handleClickAddLink}>Add Link</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange}>
           <Node type="default" component={ DefaultNode }>
             <Port top="calc(50% - 0.2rem)" left="-0.2rem" component={ DefaultPort }/>
