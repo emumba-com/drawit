@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 
 import DraggableElementHTML from './DraggableElementHTML'
 
@@ -76,6 +77,16 @@ export default (pOptions = {}) => WrappedElement => {
     const { draggableElement, toPositionAttributes } = pOptions
 
     return class DraggableWrapper extends React.Component {
+        static propTypes = {
+            offsetX: PropTypes.number,
+            offsetY: PropTypes.number,
+
+            onChange: PropTypes.func,
+            onDragStart: PropTypes.func,
+            onDrag: PropTypes.func,
+            onDragEnd: PropTypes.func
+        }
+
         constructor(props) {
             super(props)
             
@@ -90,13 +101,24 @@ export default (pOptions = {}) => WrappedElement => {
         }
 
         handleDragStart = e => {
+            const { onDragStart } = this.props
+            const { x, y } = this.state
+
             this.setState({
                 isDragging: true
+            })
+
+            onDragStart && onDragStart({
+                x, y
             })
         }
 
         handleMove = e => {
+            const { onDrag } = this.props
+
             this.setState(e)
+
+            onDrag && onDrag(e)
         }
 
         handleDragEnd = e => {
@@ -105,9 +127,10 @@ export default (pOptions = {}) => WrappedElement => {
             })
 
             const { x, y } = this.state
-            const { model, onChange } = this.props
+            const { model, onChange, onDragEnd } = this.props
             const nextModel = {...model, x, y}
-            onChange(nextModel)
+            onChange && onChange(nextModel)
+            onDragEnd && onDragEnd({x, y})
         }
 
         render() {
