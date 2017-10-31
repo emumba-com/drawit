@@ -92,3 +92,15 @@ Drawit--DefaultLink {
 .Drawit--DefaultPort:hover {
     background: #ccc;
 }
+
+.Drawit--DefaultPoint {
+    border: 0.05rem solid #999;
+    border-radius: 0.4rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    background: white;
+}
+
+.Drawit--DefaultPoint:hover {
+    background: #ccc;
+}
