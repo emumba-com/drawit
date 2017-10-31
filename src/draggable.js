@@ -21,6 +21,9 @@ class Draggable extends React.Component {
         const relX = e.pageX - (box.left + window.scrollX - offsetX)
         const relY = e.pageY - (box.top + window.scrollY - offsetY)
 
+        // console.log(`${relX} = ${e.pageX} - (${box.left} + ${window.scrollX} + ${offsetX})`)
+        // console.log(`${relY} = ${e.pageY} - (${box.top} + ${window.scrollY} - ${offsetY})`)
+
         this.setState({
             relX, 
             relY

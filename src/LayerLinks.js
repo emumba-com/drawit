@@ -34,13 +34,15 @@ export default class LayerLinks extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { models, children, onChangeLinkModel } = this.props
+        const { value, children, onChangeLinkModel } = this.props
+        const { links } = value
 
         return (
             <div className="Drawit--Diagram--Links">
                 <svg>
                 {
-                    models.map(model => {
+                    Object.keys(links).map(key => {
+                        const model = links[key]
                         const { type } = model
                         const link = getLinkByType(type, children)
 

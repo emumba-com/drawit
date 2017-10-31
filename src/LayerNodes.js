@@ -34,12 +34,14 @@ export default class LayerNodes extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { models, children, onChangeNodeModel } = this.props
+        const { value, children, onChangeNodeModel } = this.props
+        const { nodes } = value
 
         return (
             <div className="Drawit--Diagram--Nodes">
             {
-                models.map(model => {
+                Object.keys(nodes).map(key => {
+                    const model = nodes[key]
                     const { type } = model
                     const node = getNodeByType(type, children)
 

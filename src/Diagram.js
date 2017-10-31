@@ -44,7 +44,10 @@ export default class Diagram extends React.Component {
         // ensure a component for give 'type' exists
 
         this.updateValue({
-            nodes: [...nodes, nextModel]
+            nodes: {
+                ...nodes,
+                [nextModel.id]: nextModel
+            }
         })
 
         // return modified model
@@ -68,16 +71,19 @@ export default class Diagram extends React.Component {
             }, model)
 
         this.updateValue({
-            links: [...links, nextModel]
+            links: {
+                ...links,
+                [nextModel.id]: nextModel
+            }
         })
     }
 
     handleChangeNodeModel = model => {
         const { value: { nodes } } = this.props
-        const nextNodes = [...nodes]
-
-        const node = nextNodes.find(n => n.id === model.id)
-        Object.assign(node, model)
+        const nextNodes = {
+            ...nodes,
+            [model.id]: model
+        }
 
         this.updateValue({
             nodes: nextNodes
@@ -87,10 +93,10 @@ export default class Diagram extends React.Component {
     handleChangeLinkModel = model => {
         // console.log('link model updated: ', model)
         const { value: { links } } = this.props
-        const nextLinks = [...links]
-
-        const link = nextLinks.find(n => n.id === model.id)
-        Object.assign(link, model)
+        const nextLinks = {
+            ...links,
+            [model.id]: model
+        }
 
         this.updateValue({
             links: nextLinks
@@ -98,18 +104,18 @@ export default class Diagram extends React.Component {
     }
 
     render() {
-        const { value, children } = this.props
-        const { nodes: nodeModels = [], links: linkModels = [] } = value
+        const { value: pValue = {}, children } = this.props
+        const value = { nodes: {}, links: {}, ports: {}, points: {}, ...pValue }
 
         return (
             <div className="Drawit--Diagram">
                 <LayerNodes
-                    models={nodeModels}
+                    value={value}
                     onChangeNodeModel={ this.handleChangeNodeModel }>
                     { children.filter(child => child.type === Node) }
                 </LayerNodes>
                 <LayerLinks
-                    models={linkModels}
+                    value={value}
                     onChangeLinkModel={ this.handleChangeLinkModel }>
                     { children.filter(child => child.type === Link) }
                 </LayerLinks>
