@@ -18,17 +18,33 @@ const getPointByType = (type, children = []) => {
 
 
 export default class LinkShell extends React.Component {
+    handleChangePoint = (index, pointModel) => {
+        // console.log(`point changed: `, model)
+        const { onChange, model } = this.props
+        const nextPoints = [...model.points]
+        nextPoints.splice(index, 1, pointModel)
+        const nextModel = {...model, points: nextPoints}
+
+        onChange(nextModel)
+    }
     render() {
-        const { model, link, onChange, children } = this.props
+        const { model, link, onChange, children, offsetX, offsetY } = this.props
         const { component: LinkComponent } = link.props
-        const { points: pointModels = [[0, 0], [100, 100]] } = model
+        const { points: pointModels = [{x: 0, y: 0}, {x: 100, y: 100}] } = model
         const point = getPointByType('default', children)
 
         return (
             <g className="Drawit--LinkShell">
                 <LinkComponent model={model}/>
                 {
-                    pointModels.map((p, index) => <PointShell key={index} model={p} point={point}/>)
+                    pointModels.map((p, index) =>
+                        <PointShell
+                            key={index}
+                            model={p}
+                            point={point}
+                            onChange={this.handleChangePoint.bind(null, index)}
+                            offsetX={offsetX}
+                            offsetY={offsetY}/>)
                 }
             </g>
         )

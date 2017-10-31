@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import DraggableElementHTML from './DraggableElementHTML'
+
 class Draggable extends React.Component {
     state = { relX: 0, relY: 0, deltaX: 0, deltaY: 0 }
     
@@ -11,7 +13,7 @@ class Draggable extends React.Component {
 
         onDragStart && onDragStart()
 
-        const ref = ReactDOM.findDOMNode(this.refs.handle)
+        const ref = ReactDOM.findDOMNode(this)
         const body = document.body
         const box = ref.getBoundingClientRect()
 
@@ -51,25 +53,29 @@ class Draggable extends React.Component {
     }
 
     render() {
-        const { x: left, y: top, children } = this.props
+        const {
+            x,
+            y,
+            draggableElement: DraggableElement = DraggableElementHTML,
+            toPositionAttributes = (left, top) => ({style: {left, top}}),
+            children
+        } = this.props
 
         return (
-            <div
+            <DraggableElement
                 onMouseDown={this.onMouseDown}
                 className="Drawit--Draggable"
-                style={{
-                    left,
-                    top
-                }}
-                ref="handle">
+                {...toPositionAttributes(x, y)}>
                 {children}
-            </div>
+            </DraggableElement>
         )
     }
 }
 
-export default options => WrappedElement =>
-    class DraggableWrapper extends React.Component {
+export default (pOptions = {}) => WrappedElement => {
+    const { draggableElement, toPositionAttributes } = pOptions
+
+    return class DraggableWrapper extends React.Component {
         constructor(props) {
             super(props)
             
@@ -106,7 +112,7 @@ export default options => WrappedElement =>
 
         render() {
             const { x, y, isDragging } = this.state
-            const { offsetX, offsetY, ...rest } = this.props
+            const { offsetX = 0, offsetY = 0, ...rest } = this.props
 
             return (
                 <Draggable
@@ -116,9 +122,12 @@ export default options => WrappedElement =>
                     offsetY={     offsetY    }
                     onDragStart={ this.handleDragStart }
                     onMove={      this.handleMove      }
-                    onDragEnd={   this.handleDragEnd   }>
+                    onDragEnd={   this.handleDragEnd   }
+                    draggableElement={draggableElement}
+                    toPositionAttributes={toPositionAttributes}>
                     <WrappedElement isDragging={isDragging} {...rest}/>
                 </Draggable>
             )
         }
     }
+}

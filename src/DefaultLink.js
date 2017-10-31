@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 const toDString = p => 
-    `M${p[0][0]},${p[0][1]} L${p[1][0]},${p[1][1]}`
+    `M${p[0].x},${p[0].y} L${p[1].x},${p[1].y}`
 
 export default class DefaultLink extends React.Component {
     static propTypes = {
@@ -11,7 +11,7 @@ export default class DefaultLink extends React.Component {
 
     render() {
         const { model } = this.props
-        const { points = [[0, 0], [100, 100]] } = model
+        const { points = [{x: 0, y: 0}, {x: 100, y: 100}] } = model
 
         return <path stroke="#666" d={toDString(points)}/>
     }

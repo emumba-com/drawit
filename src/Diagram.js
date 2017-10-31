@@ -57,7 +57,14 @@ export default class Diagram extends React.Component {
         const nextModel =
             Object.assign({
                 id: makeUID(),
-                type: 'default'
+                type: 'default',
+                points: [{
+                    x: 0,
+                    y: 0
+                }, {
+                    x: 100,
+                    y: 100
+                }]
             }, model)
 
         this.updateValue({
@@ -78,6 +85,7 @@ export default class Diagram extends React.Component {
     }
 
     handleChangeLinkModel = model => {
+        // console.log('link model updated: ', model)
         const { value: { links } } = this.props
         const nextLinks = [...links]
 

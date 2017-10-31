@@ -1,9 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import draggable from './draggable'
+import DraggableElementSVG from './DraggableElementSVG'
 import DefaultPoint from './DefaultPoint'
 
-export default class PointShell extends React.Component {
+export default draggable({
+    draggableElement: DraggableElementSVG,
+    toPositionAttributes: (x, y) => ({x, y})
+})(class PointShell extends React.Component {
     static propTypes = {
         point: PropTypes.any,
         component: PropTypes.any
@@ -13,9 +18,9 @@ export default class PointShell extends React.Component {
         const { component: PointComponent } = point.props
 
         return (
-            <svg x={model[0]} y={model[1]} style={{overflow: 'visible'}}>
+            <g>
                 <PointComponent />
-            </svg>
+            </g>
         )
     }
-}
+})
