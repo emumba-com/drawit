@@ -6,6 +6,7 @@ import {
   Port,
   Node,
   Link,
+  Position,
   DefaultNode,
   DefaultLink,
   DefaultPort
@@ -66,8 +67,10 @@ class Demo extends Component {
         <button onClick={this.handleClickAddLink}>Add Link</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange}>
           <Node type="default" component={ DefaultNode }>
-            <Port top="calc(50% - 0.2rem)" left="-0.2rem" component={ DefaultPort }/>
-            <Port top="calc(50% - 0.2rem)" right="-0.2rem" component={ DefaultPort }/>
+            <Port type="default" component={ DefaultPort }>
+              <Position type="left" top="calc(50% - 0.2rem)" left="-0.2rem"/>
+              <Position type="right" top="calc(50% - 0.2rem)" right="-0.2rem"/>
+            </Port>
           </Node>
           <Node type="circle" component={ NodeCircle }>
             <Port top="calc(50% - 0.2rem)" left="-0.2rem" component={ DefaultPort }/>

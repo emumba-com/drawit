@@ -1,33 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { Node, Link } from './conf'
+import { DefaultNode, DefaultLink } from './defaults'
+import { buildConf, Node, Link } from './conf'
 import { LayerNodes, LayerLinks } from './layers'
 import { makeUID, toCache } from './utils'
-
-/**
- * Conf
- * {
- *     nodes: {
- *         'default': {
- *              ports: {
- *                  'default': {
- *                      positions: {
- *                          left: {
- *                              top: 'calc(50% - 0.2rem)',
- *                              left: '-0.2rem'
- *                          },
- *                          right: {
- *                              top: 'calc(50% - 0.2rem)',
- *                              right: '-0.2rem'
- *                          }
- *                      }
- *                  }
- *              }
- *         }
- *     }
- * }
- */
 
 const cache = {}
 const getNodeByType = (type, children) => {
@@ -36,10 +13,6 @@ const getNodeByType = (type, children) => {
     }
 
     return cache[type]
-}
-
-const getConf = () => {
-    return {}
 }
 
 const makePortModels = (props, nodeModel) => {
@@ -160,6 +133,9 @@ export default class Diagram extends React.Component {
     render() {
         const { value: pValue = {}, children } = this.props
         const value = { nodes: {}, links: {}, ports: {}, points: {}, ...pValue }
+        const conf = buildConf(this)
+
+        console.log(`[Diagram] Created conf: `, conf)
 
         return (
             <div className="Drawit--Diagram">
