@@ -1,5 +1,4 @@
 import React from 'react'
-import draggable from './draggable'
 
 export default class DefaultPort extends React.Component {
     render() {

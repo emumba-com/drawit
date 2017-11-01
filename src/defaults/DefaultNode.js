@@ -1,5 +1,4 @@
 import React from 'react'
-import draggable from './draggable'
 
 export default class DefaultNode extends React.Component {
     render() {

@@ -2,9 +2,9 @@
 import React from 'react'
 
 // src
-import Point from './Point'
+import { Point } from '../conf'
 import PointShell from './PointShell'
-import DefaultPoint from './DefaultPoint'
+import { DefaultPoint } from '../defaults'
 
 const cache = {}
 

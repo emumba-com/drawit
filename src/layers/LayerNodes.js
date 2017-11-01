@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 
-import NodeShell from './NodeShell'
+import { NodeShell } from '../shells'
 
 const cache = {}
 

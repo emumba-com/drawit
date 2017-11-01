@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import draggable from './draggable'
-import DraggableElementSVG from './DraggableElementSVG'
-import DefaultPoint from './DefaultPoint'
+import { draggable, DraggableElementSVG } from '../utils'
+import { DefaultPoint } from '../defaults'
 
 export default draggable({
     draggableElement: DraggableElementSVG,

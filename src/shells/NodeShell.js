@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import draggable from './draggable'
-import Port from './Port'
+import { draggable } from '../utils'
+import { Port } from '../conf'
 import PortShell from './PortShell'
 
 export default draggable()(class NodeShell extends React.Component {

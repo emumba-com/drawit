@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 
-import LinkShell from './LinkShell'
+import { LinkShell } from '../shells'
 
 const cache = {}
 

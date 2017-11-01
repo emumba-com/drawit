@@ -1,11 +1,55 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Node from './Node'
-import Link from './Link'
-import LayerNodes from './LayerNodes'
-import LayerLinks from './LayerLinks'
-import { makeUID } from './utils'
+import { Node, Link } from './conf'
+import { LayerNodes, LayerLinks } from './layers'
+import { makeUID, toCache } from './utils'
+
+/**
+ * Conf
+ * {
+ *     nodes: {
+ *         'default': {
+ *              ports: {
+ *                  'default': {
+ *                      positions: {
+ *                          left: {
+ *                              top: 'calc(50% - 0.2rem)',
+ *                              left: '-0.2rem'
+ *                          },
+ *                          right: {
+ *                              top: 'calc(50% - 0.2rem)',
+ *                              right: '-0.2rem'
+ *                          }
+ *                      }
+ *                  }
+ *              }
+ *         }
+ *     }
+ * }
+ */
+
+const cache = {}
+const getNodeByType = (type, children) => {
+    if ( !cache[type] ) {
+        cache[type] = children.find(child => child.props.type === type)
+    }
+
+    return cache[type]
+}
+
+const getConf = () => {
+    return {}
+}
+
+const makePortModels = (props, nodeModel) => {
+    // how many ports are required for this node
+    const { children } = props
+    const node = getNodeByType(nodeModel.type, children.filter(child.type === Node))
+    const ports = node.props.children.filter(child.type === Port)
+
+    return {}
+}
 
 export default class Diagram extends React.Component {
     static propTypes = {
@@ -14,6 +58,7 @@ export default class Diagram extends React.Component {
         onChange: PropTypes.func
     }
 
+    // TODO make this an external func
     updateValue(nextProps) {
         const { value, onChange = () => {} } = this.props
 
@@ -25,15 +70,18 @@ export default class Diagram extends React.Component {
 
     addNode( model ) {
         const { value } = this.props
-        const { nodes = [] } = value
+        const { nodes = {}, ports = {} } = value
 
         // can i modify model? no
         // const { id, type } = model
-        const nextModel =
+        const newNodeModel =
             Object.assign({
                 id: makeUID(),
                 type: 'default'
             }, model)
+
+        const newPortModels = makePortModels(this.props, newNodeModel)
+        newNodeModel.ports = Object.keys(newPortModels)
 
         // if new, assign id
         
@@ -46,7 +94,11 @@ export default class Diagram extends React.Component {
         this.updateValue({
             nodes: {
                 ...nodes,
-                [nextModel.id]: nextModel
+                [newNodeModel.id]: newNodeModel
+            },
+            ports: {
+                ...ports,
+                ...newPortModels
             }
         })
 
@@ -78,6 +130,7 @@ export default class Diagram extends React.Component {
         })
     }
 
+    // TODO make this an external func
     handleChangeNodeModel = model => {
         const { value: { nodes } } = this.props
         const nextNodes = {
@@ -90,6 +143,7 @@ export default class Diagram extends React.Component {
         })
     }
 
+    // TODO make this an external func
     handleChangeLinkModel = model => {
         // console.log('link model updated: ', model)
         const { value: { links } } = this.props

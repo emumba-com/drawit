@@ -1,5 +1,4 @@
 import React from 'react'
-import draggable from './draggable'
 
 export default class DefaultPoint extends React.Component {
     render() {

@@ -59,7 +59,7 @@ class Demo extends Component {
 
     return (
       <div>
-        <h1>drawit Demo</h1>
+        <h1>Drawit Demo</h1>
         <button onClick={this.handleClickAddNode}>Add Node</button>
         <button onClick={this.handleClickAddCircle}>Add Circle</button>
         <button onClick={this.handleClickAddDiamond}>Add Diamond</button>
