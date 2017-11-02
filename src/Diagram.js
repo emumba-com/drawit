@@ -6,24 +6,6 @@ import { buildConf, Node, Link } from './conf'
 import { LayerNodes, LayerLinks } from './layers'
 import { makeUID, toCache } from './utils'
 
-const cache = {}
-const getNodeByType = (type, children) => {
-    if ( !cache[type] ) {
-        cache[type] = children.find(child => child.props.type === type)
-    }
-
-    return cache[type]
-}
-
-const makePortModels = (props, nodeModel) => {
-    // how many ports are required for this node
-    const { children } = props
-    const node = getNodeByType(nodeModel.type, children.filter(child.type === Node))
-    const ports = node.props.children.filter(child.type === Port)
-
-    return {}
-}
-
 const createPortModel = ( pModel = {}, parentID, position ) => {
     /**
      * model: {
@@ -39,6 +21,17 @@ const createPortModel = ( pModel = {}, parentID, position ) => {
         type: 'default',
         parentID,
         position,
+        ...pModel
+    }
+}
+
+const createPointModel = ( pModel = {}, parentID ) => {
+    return {
+        id: makeUID(),
+        type: 'default',
+        parentID,
+        x: 0,
+        y: 0,
         ...pModel
     }
 }
@@ -104,17 +97,6 @@ export default class Diagram extends React.Component {
             return output
         }, {})
 
-        // const newPortModels = makePortModels(this.props, newNodeModel)
-        // newNodeModel.ports = Object.keys(newPortModels)
-
-        // if new, assign id
-        
-        // if has an id, ensure it doesn't already exist
-
-        // if it already exists, throw an error
-
-        // ensure a component for give 'type' exists
-
         this.updateValue({
             nodes: {
                 ...nodes,
@@ -136,7 +118,7 @@ export default class Diagram extends React.Component {
 
     addLink( model = {} ) {
         const { value } = this.props
-        const { links = [] } = value
+        const { links = [], points = [] } = value
 
         const nextModel =
             Object.assign({
@@ -152,11 +134,18 @@ export default class Diagram extends React.Component {
                     type: 'default'
                 }]
             }, model)
+        
+        const newPointModels = nextModel.points.map(model => createPointModel(model, nextModel.id))
+        nextModel.points = newPointModels.map(model => model.id)
 
         this.updateValue({
             links: {
                 ...links,
                 [nextModel.id]: nextModel
+            },
+            points: {
+                ...points,
+                ...toCache(newPointModels)
             }
         })
     }
@@ -188,6 +177,18 @@ export default class Diagram extends React.Component {
         })
     }
 
+    handleChangePointModel = model => {
+        const { value: { points } } = this.props
+        const nextPoints = {
+            ...points,
+            [model.id]: model
+        }
+
+        this.updateValue({
+            points: nextPoints
+        })
+    }
+
     render() {
         const { value: pValue = {}, children } = this.props
         const value = { nodes: {}, links: {}, ports: {}, points: {}, ...pValue }
@@ -204,7 +205,7 @@ export default class Diagram extends React.Component {
                 <LayerLinks
                     conf={conf}
                     value={value}
-                    onChangeLinkModel={ this.handleChangeLinkModel }/>
+                    onChangePointModel={ this.handleChangePointModel }/>
             </div>
         )
     }

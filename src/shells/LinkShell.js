@@ -21,20 +21,12 @@ const getPointByType = (type, children = []) => {
 export default class LinkShell extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,
-        model: PropTypes.object.isRequired
+        model: PropTypes.object.isRequired,
+        value: PropTypes.object.isRequired
     }
 
     state = { isDraggingPoint: false, draggedPoint: null, draggedPointIndex: null }
 
-    handleChangePoint = (index, pointModel) => {
-        // console.log(`point changed: `, model)
-        const { onChange, model } = this.props
-        const nextPoints = [...model.points]
-        nextPoints.splice(index, 1, pointModel)
-        const nextModel = {...model, points: nextPoints}
-
-        onChange(nextModel)
-    }
     handleDragPointStart = (index, position) => {
         this.setState({
             isDraggingPoint: true,
@@ -56,10 +48,13 @@ export default class LinkShell extends React.Component {
     }
     render() {
         const { isDraggingPoint, draggedPoint, draggedPointIndex } = this.state
-        const { model, conf, onChange, offsetX, offsetY } = this.props
+        const { value, model, conf, onChangePoint, offsetX, offsetY } = this.props
         const { component: LinkComponent } = conf
         const { points: pointModels } = model
-        // console.log(`pointModels: `, pointModels, 'conf: ', conf)
+        const injectibleModel = {
+            ...model,
+            points: model.points.map(pointID => value.points[pointID])
+        }
         // const point = getPointByType('default', children)
 
         // TODO binds below are horrible, find an alternate way of doing it
@@ -67,7 +62,7 @@ export default class LinkShell extends React.Component {
         return (
             <g className="Drawit--LinkShell">
                 <LinkComponent
-                    model={model}
+                    model={injectibleModel}
                     isDraggingPoint={isDraggingPoint}
                     draggedPoint={draggedPoint}
                     draggedPointIndex={draggedPointIndex}/>
@@ -76,11 +71,11 @@ export default class LinkShell extends React.Component {
                         <PointShell
                             key={index}
                             index={index}
-                            model={p}
-                            conf={conf.points[p.type]}
+                            model={value.points[p]}                            
+                            conf={conf.points[value.points[p].type]}
                             offsetX={offsetX}
                             offsetY={offsetY}
-                            onChange={this.handleChangePoint.bind(null, index)}
+                            onChange={onChangePoint}
                             onDragStart={this.handleDragPointStart.bind(null, index)}
                             onDrag={this.handleDragPoint.bind(null, index)}
                             onDragEnd={this.handleDragPointEnd.bind(null, index)}/>)
