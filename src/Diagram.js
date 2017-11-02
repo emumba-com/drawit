@@ -24,6 +24,25 @@ const makePortModels = (props, nodeModel) => {
     return {}
 }
 
+const createPortModel = ( pModel = {}, parentID, position ) => {
+    /**
+     * model: {
+     *      id,
+     *      type,
+     *      parentID,
+     *      position
+     * }
+     */
+
+    return {
+        id: makeUID(),
+        type: 'default',
+        parentID,
+        position,
+        ...pModel
+    }
+}
+
 export default class Diagram extends React.Component {
     static propTypes = {
         children: PropTypes.any,
@@ -42,6 +61,17 @@ export default class Diagram extends React.Component {
     }
 
     addNode( model ) {
+        /**
+         * model: {
+         *      id,
+         *      type,
+         *      ports: {
+         *          left: portID,
+         *          top: portID
+         *      }
+         * }
+         */
+
         const { value } = this.props
         const { nodes = {}, ports = {} } = value
 
@@ -60,6 +90,19 @@ export default class Diagram extends React.Component {
                     }
                 }
             }, model)
+        
+        const newPortModels = Object.keys(newNodeModel.ports).reduce((output, key) => {
+            const portModel = createPortModel(newNodeModel.ports[key], newNodeModel.id, key)
+            output[key] = portModel
+
+            return output
+        }, {})
+
+        newNodeModel.ports = Object.keys(newPortModels).reduce((output, key) => {
+            output[key] = newPortModels[key].id
+
+            return output
+        }, {})
 
         // const newPortModels = makePortModels(this.props, newNodeModel)
         // newNodeModel.ports = Object.keys(newPortModels)
@@ -77,11 +120,16 @@ export default class Diagram extends React.Component {
                 ...nodes,
                 [newNodeModel.id]: newNodeModel
             },
-/*            ports: {
+            ports: {
                 ...ports,
-                ...newPortModels
+                ...Object.keys(newPortModels).reduce((output, key) => {
+                    const portModel = newPortModels[key]
+                    output[portModel.id] = portModel
+
+                    return output
+                }, {})
             }
-        */        })
+        })
 
         // return modified model
     }

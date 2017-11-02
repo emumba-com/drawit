@@ -38,6 +38,7 @@ export default class LayerNodes extends React.Component {
                         <NodeShell
                             key={model.id}
                             model={model}
+                            value={value}
                             conf={conf.nodes[type]}
                             offsetX={offsetX}
                             offsetY={offsetY}
