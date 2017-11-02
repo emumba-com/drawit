@@ -2,8 +2,9 @@ import React from 'react'
 import Node from './Node'
 import Link from './Link'
 import Port from './Port'
+import Point from './Point'
 import Position from './Position'
-import { DefaultNode, DefaultLink, DefaultPort } from '../defaults'
+import { DefaultNode, DefaultLink, DefaultPort, DefaultPoint } from '../defaults'
 
 /**
  * Conf
@@ -35,27 +36,30 @@ import { DefaultNode, DefaultLink, DefaultPort } from '../defaults'
  * }
  */
 
-const buildPositionConf = ({ props: { type = 'default', top = '', left = '', bottom = '', right = '' } }) => 
+const buildPortConf = ({ props: { type = 'default', component = DefaultPort, children = [] } }) =>
+    ({
+        type,
+        component
+    })
+
+const buildPositionConf = ({ props: { type = 'default', top = '', left = '', bottom = '', right = '', children = [] } }) => 
     ({
         type,
         top,
         left,
         bottom,
-        right
-    })
-
-const buildPortConf = ({ props: { type = 'default', component = DefaultPort, children = [] } }) =>
-    ({
-        type,
-        component,
-        positions: React.Children.toArray(children).reduce((output, child) => {
-            if ( child.type !== Position ) {
-                console.warn(`Port[${type}] contains an unrecognized child of type: `, child.type)
+        right,
+        ports: React.Children.toArray(children).reduce((output, child) => {
+            if ( child.type !== Port ) {
+                console.warn(`Position[${type}] contains an unrecognized child of type: `, child.type)
                 return output
             }
 
-            const positionConf = buildPositionConf(child)
-            output[positionConf.type] = positionConf
+            const portConf = {
+                top, left, bottom, right,
+                ...buildPortConf(child)
+            }
+            output[portConf.type] = portConf
 
             return output
         }, {})
@@ -65,22 +69,38 @@ const buildNodeConf = ({ props: { type = 'default', component = DefaultNode, chi
     ({
         type,
         component,
-        ports: React.Children.toArray(children).reduce((output, child) => {
-            if ( child.type !== Port ) {
+        positions: React.Children.toArray(children).reduce((output, child) => {
+            if ( child.type !== Position ) {
                 console.warn(`Node[${type}] contains an unrecognized child of type: `, child.type)
                 return output
             }
 
-            const portConf = buildPortConf(child)
-            output[portConf.type] = portConf
+            const positionConf = buildPositionConf(child)
+            output[positionConf.type] = positionConf
             return output
         }, {})
     })
 
-const buildLinkCOnf = ({ props: { type = 'default', component = DefaultLink } }) =>
+const buildPointConf = ({ props: { type = 'default', component = DefaultPoint, children = [] } }) =>
     ({
         type,
         component
+    })
+
+const buildLinkConf = ({ props: { type = 'default', component = DefaultLink, children = [] } }) =>
+    ({
+        type,
+        component,
+        points: React.Children.toArray(children).reduce((output, child) => {
+            if ( child.type !== Point ) {
+                console.warn(`Link[${type}] contains an unrecognized child of type: `, child.type)
+                return output
+            }
+
+            const pointConf = buildPointConf(child)
+            output[pointConf.type] = pointConf
+            return output
+        }, {})
     })
 
 export default ({ props: {children} }) =>
@@ -89,7 +109,7 @@ export default ({ props: {children} }) =>
             const nodeConf = buildNodeConf(child)
             output.nodes[nodeConf.type] = nodeConf
         } else if ( child.type === Link ) {
-            const linkConf = buildLinkCOnf(child)
+            const linkConf = buildLinkConf(child)
             output.links[linkConf.type] = linkConf
         } else {
             console.warn(`Couldn't recorgnize type of node: `, child.type)

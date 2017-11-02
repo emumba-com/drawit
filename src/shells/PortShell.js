@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 
 export default class PortShell extends React.Component {
     static propTypes = {
-        port: PropTypes.any
+        conf: PropTypes.any
     }
     render() {
-        const { port } = this.props
-        const { component: PortComponent, top, left, bottom, right } = port.props
+        const { conf } = this.props
+        const { component: PortComponent, top, left, bottom, right } = conf
         const style = { top, left, right, bottom }
 
         return (

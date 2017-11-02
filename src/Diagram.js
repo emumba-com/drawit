@@ -50,11 +50,19 @@ export default class Diagram extends React.Component {
         const newNodeModel =
             Object.assign({
                 id: makeUID(),
-                type: 'default'
+                type: 'default',
+                ports: {
+                    left: {
+                        type: 'default'
+                    },
+                    right: {
+                        type: 'default'
+                    }
+                }
             }, model)
 
-        const newPortModels = makePortModels(this.props, newNodeModel)
-        newNodeModel.ports = Object.keys(newPortModels)
+        // const newPortModels = makePortModels(this.props, newNodeModel)
+        // newNodeModel.ports = Object.keys(newPortModels)
 
         // if new, assign id
         
@@ -69,11 +77,11 @@ export default class Diagram extends React.Component {
                 ...nodes,
                 [newNodeModel.id]: newNodeModel
             },
-            ports: {
+/*            ports: {
                 ...ports,
                 ...newPortModels
             }
-        })
+        */        })
 
         // return modified model
     }
@@ -88,10 +96,12 @@ export default class Diagram extends React.Component {
                 type: 'default',
                 points: [{
                     x: 0,
-                    y: 0
+                    y: 0,
+                    type: 'default'
                 }, {
                     x: 100,
-                    y: 100
+                    y: 100,
+                    type: 'default'
                 }]
             }, model)
 
@@ -135,20 +145,18 @@ export default class Diagram extends React.Component {
         const value = { nodes: {}, links: {}, ports: {}, points: {}, ...pValue }
         const conf = buildConf(this)
 
-        console.log(`[Diagram] Created conf: `, conf)
+        // console.log(`[Diagram] Created conf: `, conf)
 
         return (
             <div className="Drawit--Diagram">
                 <LayerNodes
+                    conf={conf}
                     value={value}
-                    onChangeNodeModel={ this.handleChangeNodeModel }>
-                    { children.filter(child => child.type === Node) }
-                </LayerNodes>
+                    onChangeNodeModel={ this.handleChangeNodeModel }/>
                 <LayerLinks
+                    conf={conf}
                     value={value}
-                    onChangeLinkModel={ this.handleChangeLinkModel }>
-                    { children.filter(child => child.type === Link) }
-                </LayerLinks>
+                    onChangeLinkModel={ this.handleChangeLinkModel }/>
             </div>
         )
     }

@@ -9,12 +9,12 @@ export default draggable({
     toPositionAttributes: (x, y) => ({x, y})
 })(class PointShell extends React.Component {
     static propTypes = {
-        point: PropTypes.any,
-        component: PropTypes.any
+        conf: PropTypes.object.isRequired,
+        model: PropTypes.object.isRequired
     }
     render() {
-        const { point, model } = this.props
-        const { component: PointComponent } = point.props
+        const { conf, model } = this.props
+        const { component: PointComponent } = conf
 
         return (
             <g>

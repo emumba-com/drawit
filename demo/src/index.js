@@ -6,10 +6,12 @@ import {
   Port,
   Node,
   Link,
+  Point,
   Position,
   DefaultNode,
   DefaultLink,
-  DefaultPort
+  DefaultPort,
+  DefaultPoint
  } from '../../src'
 import NodeCircle from './NodeCircle'
 import NodeDiamond from './NodeDiamond'
@@ -67,20 +69,32 @@ class Demo extends Component {
         <button onClick={this.handleClickAddLink}>Add Link</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange}>
           <Node type="default" component={ DefaultNode }>
-            <Port type="default" component={ DefaultPort }>
-              <Position type="left" top="calc(50% - 0.2rem)" left="-0.2rem"/>
-              <Position type="right" top="calc(50% - 0.2rem)" right="-0.2rem"/>
-            </Port>
+            <Position type="left" top="calc(50% - 0.2rem)" left="-0.2rem">
+              <Port type="default" component={ DefaultPort }/>
+            </Position>
+            <Position type="right" top="calc(50% - 0.2rem)" right="-0.2rem">
+              <Port type="default" component={ DefaultPort }/>
+            </Position>
           </Node>
           <Node type="circle" component={ NodeCircle }>
-            <Port top="calc(50% - 0.2rem)" left="-0.2rem" component={ DefaultPort }/>
-            <Port top="calc(50% - 0.2rem)" right="-0.2rem" component={ DefaultPort }/>
+            <Position type="left" top="calc(50% - 0.2rem)" left="-0.2rem">
+              <Port type="default" component={ DefaultPort }/>  
+            </Position>
+            <Position type="right" top="calc(50% - 0.2rem)" right="-0.2rem">
+              <Port type="default" component={ DefaultPort }/>
+            </Position>
           </Node>
           <Node type="diamond" component={ NodeDiamond }>
-            <Port top="calc(50% - 0.2rem)" left="-1rem" component={ DefaultPort }/>
-            <Port top="calc(50% - 0.2rem)" right="-1rem" component={ DefaultPort }/>
+            <Position type="left" top="calc(50% - 0.2rem)" left="-1rem">
+              <Port type="default" component={ DefaultPort }/>
+            </Position>
+            <Position type="right" top="calc(50% - 0.2rem)" right="-1rem">
+              <Port type="default" component={ DefaultPort }/>
+            </Position>
           </Node>
-          <Link type="default" component={ DefaultLink }/>
+          <Link type="default" component={ DefaultLink }>
+            <Point type="default" component={ DefaultPoint }/>
+          </Link>
         </Diagram>
       </div>
     )

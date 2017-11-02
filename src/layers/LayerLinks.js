@@ -4,23 +4,13 @@ import ReactDOM from 'react-dom'
 
 import { LinkShell } from '../shells'
 
-const cache = {}
-
-const getLinkByType = (type, children) => {
-    if ( !cache[type] ) {
-        cache[type] = children.find(child => child.props.type === type)
-    }
-
-    return cache[type]
-}
-
 export default class LayerLinks extends React.Component {
     state = { offsetX: 0, offsetY: 0 }
 
     static propTypes = {
-        models: PropTypes.array,
-        children: PropTypes.any,
-        onChangeLinkModel: PropTypes.func
+        conf: PropTypes.object.isRequired,
+        value: PropTypes.object.isRequired,
+        onChangeLinkModel: PropTypes.func.isRequired
     }
     componentDidMount() {
         const ref = ReactDOM.findDOMNode(this)
@@ -34,7 +24,7 @@ export default class LayerLinks extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { value, children, onChangeLinkModel } = this.props
+        const { value, conf, onChangeLinkModel } = this.props
         const { links } = value
 
         return (
@@ -44,13 +34,12 @@ export default class LayerLinks extends React.Component {
                     Object.keys(links).map(key => {
                         const model = links[key]
                         const { type } = model
-                        const link = getLinkByType(type, children)
 
                         return (
                             <LinkShell
                                 key={model.id}
                                 model={model}
-                                link={link}
+                                conf={conf.links[type]}
                                 offsetX={offsetX}
                                 offsetY={offsetY}
                                 onChange={onChangeLinkModel}

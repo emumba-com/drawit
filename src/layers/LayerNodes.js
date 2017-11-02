@@ -4,23 +4,13 @@ import ReactDOM from 'react-dom'
 
 import { NodeShell } from '../shells'
 
-const cache = {}
-
-const getNodeByType = (type, children) => {
-    if ( !cache[type] ) {
-        cache[type] = children.find(child => child.props.type === type)
-    }
-
-    return cache[type]
-}
-
 export default class LayerNodes extends React.Component {
     state = { offsetX: 0, offsetY: 0 }
 
     static propTypes = {
-        models: PropTypes.array,
-        children: PropTypes.any,
-        onChangeNodeModel: PropTypes.func
+        conf: PropTypes.object.isRequired,
+        value: PropTypes.object.isRequired,
+        onChangeNodeModel: PropTypes.func.isRequired
     }
     componentDidMount() {
         const ref = ReactDOM.findDOMNode(this)
@@ -34,7 +24,7 @@ export default class LayerNodes extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { value, children, onChangeNodeModel } = this.props
+        const { conf, value, onChangeNodeModel } = this.props
         const { nodes } = value
 
         return (
@@ -43,13 +33,12 @@ export default class LayerNodes extends React.Component {
                 Object.keys(nodes).map(key => {
                     const model = nodes[key]
                     const { type } = model
-                    const node = getNodeByType(type, children)
 
                     return (
                         <NodeShell
                             key={model.id}
                             model={model}
-                            node={node}
+                            conf={conf.nodes[type]}
                             offsetX={offsetX}
                             offsetY={offsetY}
                             onChange={onChangeNodeModel}

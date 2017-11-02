@@ -1,5 +1,6 @@
 // libs
 import React from 'react'
+import PropTypes from 'prop-types'
 
 // src
 import { Point } from '../conf'
@@ -18,7 +19,13 @@ const getPointByType = (type, children = []) => {
 
 
 export default class LinkShell extends React.Component {
+    static propTypes = {
+        conf: PropTypes.object.isRequired,
+        model: PropTypes.object.isRequired
+    }
+
     state = { isDraggingPoint: false, draggedPoint: null, draggedPointIndex: null }
+
     handleChangePoint = (index, pointModel) => {
         // console.log(`point changed: `, model)
         const { onChange, model } = this.props
@@ -49,10 +56,11 @@ export default class LinkShell extends React.Component {
     }
     render() {
         const { isDraggingPoint, draggedPoint, draggedPointIndex } = this.state
-        const { model, link, onChange, children, offsetX, offsetY } = this.props
-        const { component: LinkComponent } = link.props
-        const { points: pointModels = [{x: 0, y: 0}, {x: 100, y: 100}] } = model
-        const point = getPointByType('default', children)
+        const { model, conf, onChange, offsetX, offsetY } = this.props
+        const { component: LinkComponent } = conf
+        const { points: pointModels } = model
+        // console.log(`pointModels: `, pointModels, 'conf: ', conf)
+        // const point = getPointByType('default', children)
 
         // TODO binds below are horrible, find an alternate way of doing it
 
@@ -69,7 +77,7 @@ export default class LinkShell extends React.Component {
                             key={index}
                             index={index}
                             model={p}
-                            point={point}
+                            conf={conf.points[p.type]}
                             offsetX={offsetX}
                             offsetY={offsetY}
                             onChange={this.handleChangePoint.bind(null, index)}
