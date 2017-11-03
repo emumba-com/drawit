@@ -37,6 +37,8 @@ const getCenterPoint = (x, y, { target }) => {
     }
 }
 
+const getRelativePoint = ({x, y}) => ({x, y})
+
 class Draggable extends React.Component {
     state = { relX: 0, relY: 0, deltaX: 0, deltaY: 0 }
 
@@ -87,13 +89,13 @@ class Draggable extends React.Component {
     onMouseMove = e => {
         e.preventDefault()
         const { relX, relY } = this.state
-        const { snapTargets: snapTargetTypes } = this.props
+        const { snapTargets: snapTargetTypes, offsetX, offsetY } = this.props
         const { pageX, pageY } = e
         const x = pageX - relX
         const y = pageY - relY
 
         const snapTargets = this.context.getSnapTargetsByType( snapTargetTypes )
-        const snapTarget = getSnapTargetInRange({x, y}, snapTargets)
+        const snapTarget = getSnapTargetInRange({x: x + offsetX, y: y + offsetY}, snapTargets)
 
         if ( !snapTarget ) {
             this.props.onMove({
@@ -107,7 +109,7 @@ class Draggable extends React.Component {
         const { x: cx, y: cy } = getCenterPoint(x, y, snapTarget)
 
         this.props.onMove({
-            x: cx, y: cy
+            x: cx - offsetX, y: cy - offsetY
         })
         // is near a snapTarget
         // if yes, move to center of the snapTarget
