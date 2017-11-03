@@ -88,6 +88,7 @@ class Draggable extends React.Component {
 
     onMouseMove = e => {
         e.preventDefault()
+
         const { relX, relY } = this.state
         const { snapTargets: snapTargetTypes, offsetX, offsetY } = this.props
         const { pageX, pageY } = e
@@ -95,6 +96,7 @@ class Draggable extends React.Component {
         const y = pageY - relY
 
         const snapTargets = this.context.getSnapTargetsByType( snapTargetTypes )
+        // console.log(`snapTargets found: `, snapTargets, `against: `, snapTargetTypes)
         const snapTarget = getSnapTargetInRange({x: x + offsetX, y: y + offsetY}, snapTargets)
 
         if ( !snapTarget ) {
@@ -111,6 +113,7 @@ class Draggable extends React.Component {
         this.props.onMove({
             x: cx - offsetX, y: cy - offsetY
         })
+        
         // is near a snapTarget
         // if yes, move to center of the snapTarget
         // pass isSnapped=true to child

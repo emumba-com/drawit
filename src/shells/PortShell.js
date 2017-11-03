@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { snapTarget } from '../utils'
 
 @snapTarget({
-    key: 'port',
+    type: 'port',
     strength: 10
 })
 export default class PortShell extends React.Component {
