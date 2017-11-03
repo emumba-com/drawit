@@ -1,12 +1,53 @@
+// libs
 import React from 'react'
 import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 
+// src
 import DraggableElementHTML from './DraggableElementHTML'
+
+const isPointWithinRect = (p, r) => {
+    const o = p.x > r.x && p.x < (r.x + r.width) && p.y > r.y && p.y < (r.y + r.height)
+    // console.log(`is p[${p.x}, ${p.y}] within r[${r.x}, ${r.y}, ${r.width}, ${r.height}] = ${o}`)
+
+    return o
+}
+
+const getSnapTargetInRange = (point, snapTargets) =>
+    snapTargets.find(({ target, strength }) => {
+        // console.log('[getSnapTargetInRange]: snapTargets: ', snapTargets)
+        const node = ReactDOM.findDOMNode(target)
+        const rect = node.getBoundingClientRect()
+        
+        const width = rect.width * strength
+        const height = rect.height * strength
+        const x = rect.x - ( width - rect.width ) / 2
+        const y = rect.y - ( height - rect.height ) / 2
+
+        return isPointWithinRect(point, {x, y, width, height})
+    })
+
+const getCenterPoint = (x, y, { target }) => {
+    const node = ReactDOM.findDOMNode(target)
+    const rect = node.getBoundingClientRect()
+    
+    return {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2
+    }
+}
 
 class Draggable extends React.Component {
     state = { relX: 0, relY: 0, deltaX: 0, deltaY: 0 }
-    
+
+    static contextTypes = {
+        getSnapTargetsByType: PropTypes.func
+    }
+
+    static propTypes = {
+        snapTargets: PropTypes.arrayOf(PropTypes.string)
+    }
+
     onMouseDown = e => {
         if (e.button !== 0) return
 
@@ -44,16 +85,34 @@ class Draggable extends React.Component {
     }
 
     onMouseMove = e => {
+        e.preventDefault()
         const { relX, relY } = this.state
+        const { snapTargets: snapTargetTypes } = this.props
         const { pageX, pageY } = e
         const x = pageX - relX
         const y = pageY - relY
 
-        this.props.onMove({
-          x, y
-        })
+        const snapTargets = this.context.getSnapTargetsByType( snapTargetTypes )
+        const snapTarget = getSnapTargetInRange({x, y}, snapTargets)
 
-        e.preventDefault()
+        if ( !snapTarget ) {
+            this.props.onMove({
+                x, y
+            })
+
+            return
+        }
+
+        // console.log('snapTarget detected: ', snapTarget)
+        const { x: cx, y: cy } = getCenterPoint(x, y, snapTarget)
+
+        this.props.onMove({
+            x: cx, y: cy
+        })
+        // is near a snapTarget
+        // if yes, move to center of the snapTarget
+        // pass isSnapped=true to child
+
     }
 
     render() {
@@ -77,7 +136,7 @@ class Draggable extends React.Component {
 }
 
 export default (pOptions = {}) => WrappedElement => {
-    const { draggableElement, toPositionAttributes } = pOptions
+    const { draggableElement, toPositionAttributes, snapTargets = [] } = pOptions
 
     return class DraggableWrapper extends React.Component {
         static propTypes = {
@@ -144,13 +203,14 @@ export default (pOptions = {}) => WrappedElement => {
                 <Draggable
                     x={x}
                     y={y}
-                    offsetX={     offsetX    }
-                    offsetY={     offsetY    }
-                    onDragStart={ this.handleDragStart }
-                    onMove={      this.handleMove      }
-                    onDragEnd={   this.handleDragEnd   }
+                    offsetX={offsetX}
+                    offsetY={offsetY}
+                    onDragStart={this.handleDragStart}
+                    onMove={this.handleMove}
+                    onDragEnd={this.handleDragEnd}
                     draggableElement={draggableElement}
-                    toPositionAttributes={toPositionAttributes}>
+                    toPositionAttributes={toPositionAttributes}
+                    snapTargets={snapTargets}>
                     <WrappedElement isDragging={isDragging} {...rest}/>
                 </Draggable>
             )

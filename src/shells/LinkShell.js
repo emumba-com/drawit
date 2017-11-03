@@ -7,17 +7,6 @@ import { Point } from '../conf'
 import PointShell from './PointShell'
 import { DefaultPoint } from '../defaults'
 
-const cache = {}
-
-const getPointByType = (type, children = []) => {
-    if ( !cache[type] ) {
-        cache[type] = children.find(child => child.props.type === type) || <Point type="default" component={DefaultPoint}/>
-    }
-
-    return cache[type]
-}
-
-
 export default class LinkShell extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { DefaultNode, DefaultLink } from './defaults'
 import { buildConf, Node, Link } from './conf'
 import { LayerNodes, LayerLinks } from './layers'
-import { makeUID, toCache } from './utils'
+import { makeUID, toCache, DragContext } from './utils'
 
 const createPortModel = ( pModel = {}, parentID, position ) => {
     /**
@@ -198,14 +198,16 @@ export default class Diagram extends React.Component {
 
         return (
             <div className="Drawit--Diagram">
-                <LayerNodes
-                    conf={conf}
-                    value={value}
-                    onChangeNodeModel={ this.handleChangeNodeModel }/>
-                <LayerLinks
-                    conf={conf}
-                    value={value}
-                    onChangePointModel={ this.handleChangePointModel }/>
+                <DragContext>
+                    <LayerNodes
+                        conf={conf}
+                        value={value}
+                        onChangeNodeModel={ this.handleChangeNodeModel }/>
+                    <LayerLinks
+                        conf={conf}
+                        value={value}
+                        onChangePointModel={ this.handleChangePointModel }/>
+                </DragContext>
             </div>
         )
     }

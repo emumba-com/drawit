@@ -4,10 +4,12 @@ import PropTypes from 'prop-types'
 import { draggable, DraggableElementSVG } from '../utils'
 import { DefaultPoint } from '../defaults'
 
-export default draggable({
+@draggable({
     draggableElement: DraggableElementSVG,
-    toPositionAttributes: (x, y) => ({x, y})
-})(class PointShell extends React.Component {
+    toPositionAttributes: (x, y) => ({x, y}),
+    snapTargets: ['port']
+})
+export default class PointShell extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,
         model: PropTypes.object.isRequired
@@ -22,4 +24,4 @@ export default draggable({
             </g>
         )
     }
-})
+}
