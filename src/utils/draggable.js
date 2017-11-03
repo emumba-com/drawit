@@ -40,7 +40,12 @@ const getCenterPoint = (x, y, { target }) => {
 const getRelativePoint = ({x, y}) => ({x, y})
 
 class Draggable extends React.Component {
-    state = { relX: 0, relY: 0, deltaX: 0, deltaY: 0 }
+    state = {
+        relX: 0,
+        relY: 0,
+        deltaX: 0,
+        deltaY: 0
+    }
 
     static contextTypes = {
         getSnapTargetsByType: PropTypes.func
@@ -101,7 +106,7 @@ class Draggable extends React.Component {
 
         if ( !snapTarget ) {
             this.props.onMove({
-                x, y
+                x, y, isSnapped: false
             })
 
             return
@@ -111,7 +116,9 @@ class Draggable extends React.Component {
         const { x: cx, y: cy } = getCenterPoint(x, y, snapTarget)
 
         this.props.onMove({
-            x: cx - offsetX, y: cy - offsetY
+            x: cx - offsetX,
+            y: cy - offsetY,
+            isSnapped: true
         })
         
         // is near a snapTarget
@@ -163,7 +170,8 @@ export default (pOptions = {}) => WrappedElement => {
             this.state = {
                 x,
                 y,
-                isDragging: false
+                isDragging: false,
+                isSnapped: false
             }
         }
 
@@ -201,7 +209,7 @@ export default (pOptions = {}) => WrappedElement => {
         }
 
         render() {
-            const { x, y, isDragging } = this.state
+            const { x, y, isDragging, isSnapped } = this.state
             const { offsetX = 0, offsetY = 0, ...rest } = this.props
 
             return (
@@ -216,7 +224,7 @@ export default (pOptions = {}) => WrappedElement => {
                     draggableElement={draggableElement}
                     toPositionAttributes={toPositionAttributes}
                     snapTargets={snapTargets}>
-                    <WrappedElement isDragging={isDragging} {...rest}/>
+                    <WrappedElement isDragging={isDragging} isSnapped={isSnapped} {...rest}/>
                 </Draggable>
             )
         }

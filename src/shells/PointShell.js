@@ -12,15 +12,18 @@ import { DefaultPoint } from '../defaults'
 export default class PointShell extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,
-        model: PropTypes.object.isRequired
+        model: PropTypes.object.isRequired,
+
+        // injected by @draggable
+        isSnapped: PropTypes.bool
     }
     render() {
-        const { conf, model } = this.props
+        const { conf, model, isSnapped } = this.props
         const { component: PointComponent } = conf
 
         return (
             <g>
-                <PointComponent />
+                <PointComponent isSnapped={isSnapped}/>
             </g>
         )
     }
