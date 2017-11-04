@@ -22,13 +22,27 @@ import { DefaultPoint } from '../defaults'
         onDrag && onDrag(dragPosition)
     },
     onDragEnd: (event, props) => {
-        const { dragPosition, snapTargetModel } = event
-        const { onChange, model, onDragEnd } = props
+        const { dragPosition, isSnapped, snapTargetModel } = event
+        const { onChangeEntityModel, model, onDragEnd } = props
+        const nextPointModel = {...model, ...dragPosition}
 
-        onChange({
-            ...model,
-            ...dragPosition
-        })
+        if ( snapTargetModel ) {
+            nextPointModel.dockTarget = snapTargetModel.id
+
+            const nextPortModel = {...snapTargetModel}
+            
+            if ( !nextPortModel.dockedPoints ) {
+                nextPortModel.dockedPoints = []
+            }
+
+            if ( nextPortModel.dockedPoints.indexOf(model.id) < 0 ) {
+                nextPortModel.dockedPoints.push(model.id)
+            }
+
+            onChangeEntityModel('ports', nextPortModel)
+        }
+
+        onChangeEntityModel('points', nextPointModel)
 
         onDragEnd && onDragEnd(dragPosition)
 

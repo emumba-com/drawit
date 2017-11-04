@@ -188,8 +188,7 @@ export default class Diagram extends React.Component {
                     <LayerLinks
                         conf={conf}
                         value={value}
-                        onChangePointModel={ this.handleChangePointModel }
-                        onChangePortModel={ this.handleChangePortModel } />
+                        onChangeEntityModel={ this.handleChangeEntityModel }/>
                 </DragContext>
             </div>
         )

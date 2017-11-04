@@ -37,7 +37,7 @@ export default class LinkShell extends React.Component {
     }
     render() {
         const { isDraggingPoint, draggedPoint, draggedPointIndex } = this.state
-        const { value, model, conf, onChangePoint, offsetX, offsetY } = this.props
+        const { value, model, conf, onChangeEntityModel, offsetX, offsetY } = this.props
         const { component: LinkComponent } = conf
         const { points: pointModels } = model
         const injectibleModel = {
@@ -64,7 +64,7 @@ export default class LinkShell extends React.Component {
                             conf={conf.points[value.points[p].type]}
                             offsetX={offsetX}
                             offsetY={offsetY}
-                            onChange={onChangePoint}
+                            onChangeEntityModel={onChangeEntityModel}
                             onDragStart={this.handleDragPointStart.bind(null, index)}
                             onDrag={this.handleDragPoint.bind(null, index)}
                             onDragEnd={this.handleDragPointEnd.bind(null, index)}/>)
