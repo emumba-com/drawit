@@ -106,7 +106,7 @@ class Draggable extends React.Component {
 
         if ( !snapTarget ) {
             this.props.onMove({
-                x, y, isSnapped: false
+                x, y, isSnapped: false, snapTargetID: null
             })
 
             return
@@ -118,7 +118,8 @@ class Draggable extends React.Component {
         this.props.onMove({
             x: cx - offsetX,
             y: cy - offsetY,
-            isSnapped: true
+            isSnapped: true,
+            snapTargetID: snapTarget.id
         })
         
         // is near a snapTarget
@@ -171,7 +172,8 @@ export default (pOptions = {}) => WrappedElement => {
                 x,
                 y,
                 isDragging: false,
-                isSnapped: false
+                isSnapped: false,
+                snapTargetID: null
             }
         }
 
@@ -209,7 +211,7 @@ export default (pOptions = {}) => WrappedElement => {
         }
 
         render() {
-            const { x, y, isDragging, isSnapped } = this.state
+            const { x, y, isDragging, isSnapped, snapTargetID } = this.state
             const { offsetX = 0, offsetY = 0, ...rest } = this.props
 
             return (
@@ -224,7 +226,7 @@ export default (pOptions = {}) => WrappedElement => {
                     draggableElement={draggableElement}
                     toPositionAttributes={toPositionAttributes}
                     snapTargets={snapTargets}>
-                    <WrappedElement isDragging={isDragging} isSnapped={isSnapped} {...rest}/>
+                    <WrappedElement isDragging={isDragging} isSnapped={isSnapped} snapTargetID={snapTargetID} {...rest}/>
                 </Draggable>
             )
         }

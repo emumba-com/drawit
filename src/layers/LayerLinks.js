@@ -10,7 +10,8 @@ export default class LayerLinks extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,
         value: PropTypes.object.isRequired,
-        onChangePointModel: PropTypes.func.isRequired
+        onChangePointModel: PropTypes.func.isRequired,
+        onChangePortModel: PropTypes.func.isRequired
     }
     componentDidMount() {
         const ref = ReactDOM.findDOMNode(this)
@@ -24,7 +25,7 @@ export default class LayerLinks extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { value, conf, onChangePointModel } = this.props
+        const { value, conf, onChangePointModel, onChangePortModel } = this.props
         const { links } = value
 
         return (
@@ -44,6 +45,7 @@ export default class LayerLinks extends React.Component {
                                 offsetX={offsetX}
                                 offsetY={offsetY}
                                 onChangePoint={onChangePointModel}
+                                onChangePort={onChangePortModel}
                             />
                         )
                     })

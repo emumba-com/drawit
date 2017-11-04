@@ -32,9 +32,10 @@ export default class NodeShell extends React.Component {
                         const position = positions[key]
                         const portType = value.ports[model.ports[key]].type
                         const port = position.ports[portType]
+                        const portModel = value.ports[model.ports[key]]
                         // console.log('position: ', position, 'portType: ', portType, 'port: ', port)
 
-                        return <PortShell key={key} conf={port}/>
+                        return <PortShell key={key} conf={port} model={portModel}/>
                     })
                 }
             </div>

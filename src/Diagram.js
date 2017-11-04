@@ -150,44 +150,24 @@ export default class Diagram extends React.Component {
         })
     }
 
+    handleChangeEntityModel = (entityKey, entityModel) => {
+        const { value } = this.props
+        const existingEntityModels = value[entityKey]
+        const nextEntityModels = {
+            ...existingEntityModels,
+            [entityModel.id]: entityModel
+        }
+
+        this.updateValue({
+            [entityKey]: nextEntityModels
+        })
+    }
+    
     // TODO make this an external func
-    handleChangeNodeModel = model => {
-        const { value: { nodes } } = this.props
-        const nextNodes = {
-            ...nodes,
-            [model.id]: model
-        }
-
-        this.updateValue({
-            nodes: nextNodes
-        })
-    }
-
-    // TODO make this an external func
-    handleChangeLinkModel = model => {
-        // console.log('link model updated: ', model)
-        const { value: { links } } = this.props
-        const nextLinks = {
-            ...links,
-            [model.id]: model
-        }
-
-        this.updateValue({
-            links: nextLinks
-        })
-    }
-
-    handleChangePointModel = model => {
-        const { value: { points } } = this.props
-        const nextPoints = {
-            ...points,
-            [model.id]: model
-        }
-
-        this.updateValue({
-            points: nextPoints
-        })
-    }
+    handleChangeNodeModel = model => this.handleChangeEntityModel('nodes', model)
+    handleChangeLinkModel = model => this.handleChangeEntityModel('links', model)
+    handleChangePointModel = model => this.handleChangeEntityModel('points', model)
+    handleChangePortModel = model => this.handleChangeEntityModel('ports', model)
 
     render() {
         const { value: pValue = {}, children } = this.props
@@ -206,7 +186,8 @@ export default class Diagram extends React.Component {
                     <LayerLinks
                         conf={conf}
                         value={value}
-                        onChangePointModel={ this.handleChangePointModel }/>
+                        onChangePointModel={ this.handleChangePointModel }
+                        onChangePortModel={ this.handleChangePortModel } />
                 </DragContext>
             </div>
         )

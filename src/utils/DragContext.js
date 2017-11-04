@@ -13,24 +13,24 @@ export default class DragContext extends React.Component {
     }
     registerSnapTarget = (type, strength, target) => {
         // console.log('Registering snap target')
-        const uid = makeUID()
+        const id = makeUID()
 
-        snapTargets[uid] = {
-            uid,
+        snapTargets[id] = {
+            id,
             type,
             strength,
             target
         }
     }
-    unregisterSnapTarget = uid => {
-        delete snapTargets[uid]
+    unregisterSnapTarget = id => {
+        delete snapTargets[id]
     }
     getSnapTargetsByType = types =>
         Object
             .keys(snapTargets)
             .map(key => snapTargets[key])
             .filter(({ type }) => types.indexOf(type) > -1)
-            
+
     getChildContext() {
         return {
             registerSnapTarget: this.registerSnapTarget,

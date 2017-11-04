@@ -8,10 +8,11 @@ import { snapTarget } from '../utils'
 })
 export default class PortShell extends React.Component {
     static propTypes = {
-        conf: PropTypes.any
+        conf: PropTypes.object.isRequired,
+        model: PropTypes.object.isRequired,
     }
     render() {
-        const { conf } = this.props
+        const { conf, model } = this.props
         const { component: PortComponent, top, left, bottom, right } = conf
         const style = { top, left, right, bottom }
 

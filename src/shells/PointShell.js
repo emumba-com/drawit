@@ -7,7 +7,16 @@ import { DefaultPoint } from '../defaults'
 @draggable({
     draggableElement: DraggableElementSVG,
     toPositionAttributes: (x, y) => ({x, y}),
-    snapTargets: ['port']
+    snapTargets: ['port'],
+    /*
+    onDragEnd: (props, context) => {
+        const { isSnapped, snapTargetID } = props
+        const { getSnappableByID } = context
+        const snappable = getSnappableByID(snapTargetID)
+        const { target } = snappable
+        const {}
+    }
+    */
 })
 export default class PointShell extends React.Component {
     static propTypes = {
@@ -15,7 +24,8 @@ export default class PointShell extends React.Component {
         model: PropTypes.object.isRequired,
 
         // injected by @draggable
-        isSnapped: PropTypes.bool
+        isSnapped: PropTypes.bool,
+        snapTargetID: PropTypes.string
     }
     render() {
         const { conf, model, isSnapped } = this.props
@@ -23,7 +33,7 @@ export default class PointShell extends React.Component {
 
         return (
             <g>
-                <PointComponent isSnapped={isSnapped}/>
+                <PointComponent model={model} isSnapped={isSnapped} />
             </g>
         )
     }
