@@ -149,17 +149,19 @@ class Draggable extends React.Component {
 }
 
 export default (pOptions = {}) => WrappedElement => {
-    const { draggableElement, toPositionAttributes, snapTargets = [] } = pOptions
+    const {
+        draggableElement,
+        toPositionAttributes,
+        snapTargets = [],
+        onDragStart = () => {},
+        onDrag = () => {},
+        onDragEnd = () => {}
+    } = pOptions
 
     return class DraggableWrapper extends React.Component {
         static propTypes = {
             offsetX: PropTypes.number,
-            offsetY: PropTypes.number,
-
-            onChange: PropTypes.func,
-            onDragStart: PropTypes.func,
-            onDrag: PropTypes.func,
-            onDragEnd: PropTypes.func
+            offsetY: PropTypes.number
         }
 
         constructor(props) {
@@ -178,24 +180,28 @@ export default (pOptions = {}) => WrappedElement => {
         }
 
         handleDragStart = e => {
-            const { onDragStart } = this.props
             const { x, y } = this.state
 
             this.setState({
                 isDragging: true
             })
 
-            onDragStart && onDragStart({
-                x, y
-            })
+            onDragStart({
+                dragPosition: {
+                    x, y
+                }
+            }, this.props, this.context)
         }
 
         handleMove = e => {
-            const { onDrag } = this.props
-
             this.setState(e)
+            const { x, y } = e
 
-            onDrag && onDrag(e)
+            onDrag({
+                dragPosition: {
+                    x, y
+                }
+            }, this.props, this.context)
         }
 
         handleDragEnd = e => {
@@ -204,10 +210,7 @@ export default (pOptions = {}) => WrappedElement => {
             })
 
             const { x, y } = this.state
-            const { model, onChange, onDragEnd } = this.props
-            const nextModel = {...model, x, y}
-            onChange && onChange(nextModel)
-            onDragEnd && onDragEnd({x, y})
+            onDragEnd({dragPosition: {x, y}}, this.props, this.context)
         }
 
         render() {
@@ -226,7 +229,12 @@ export default (pOptions = {}) => WrappedElement => {
                     draggableElement={draggableElement}
                     toPositionAttributes={toPositionAttributes}
                     snapTargets={snapTargets}>
-                    <WrappedElement isDragging={isDragging} isSnapped={isSnapped} snapTargetID={snapTargetID} {...rest}/>
+
+                    <WrappedElement
+                        isDragging={isDragging}
+                        isSnapped={isSnapped}
+                        snapTargetID={snapTargetID}
+                        {...rest}/>
                 </Draggable>
             )
         }

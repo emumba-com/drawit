@@ -5,7 +5,23 @@ import { draggable } from '../utils'
 import { Port } from '../conf'
 import PortShell from './PortShell'
 
-@draggable()
+@draggable({
+    onDragEnd: (event, props, context) => {
+        const { dragPosition } = event
+        const { onChange, model, onDragEnd } = props
+
+        onChange({
+            ...model,
+            ...dragPosition
+        })
+
+        onDragEnd && onDragEnd(dragPosition)
+        // const { getSnappableByID } = context
+        // const snappable = getSnappableByID(snapTargetID)
+        // const { target } = snappable
+        // const {}
+    }
+})
 export default class NodeShell extends React.Component {
     static propTypes = {
         value: PropTypes.object.isRequired,

@@ -151,6 +151,8 @@ export default class Diagram extends React.Component {
     }
 
     handleChangeEntityModel = (entityKey, entityModel) => {
+        // console.log('entityKey: ', entityKey, ', entityModel: ', entityModel)
+
         const { value } = this.props
         const existingEntityModels = value[entityKey]
         const nextEntityModels = {
