@@ -164,6 +164,10 @@ export default (pOptions = {}) => WrappedElement => {
             offsetY: PropTypes.number
         }
 
+        static contextTypes = {
+            getSnapTargetByID: PropTypes.func
+        }    
+
         constructor(props) {
             super(props)
             
@@ -209,8 +213,21 @@ export default (pOptions = {}) => WrappedElement => {
                 isDragging: false
             })
 
-            const { x, y } = this.state
-            onDragEnd({dragPosition: {x, y}}, this.props, this.context)
+            const { getSnapTargetByID } = this.context
+            const { x, y, isSnapped, snapTargetID } = this.state
+            let snapTargetModel
+
+            if ( isSnapped ) {
+                const snapTarget = getSnapTargetByID(snapTargetID)
+                const { target } = snapTarget
+                snapTargetModel = target.props.model
+            }
+
+            onDragEnd({
+                dragPosition: {x, y},
+                isSnapped,
+                snapTargetModel
+            }, this.props, this.context)
         }
 
         render() {

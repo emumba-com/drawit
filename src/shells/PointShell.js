@@ -21,8 +21,8 @@ import { DefaultPoint } from '../defaults'
 
         onDrag && onDrag(dragPosition)
     },
-    onDragEnd: (event, props, context) => {
-        const { dragPosition } = event
+    onDragEnd: (event, props) => {
+        const { dragPosition, snapTargetModel } = event
         const { onChange, model, onDragEnd } = props
 
         onChange({
@@ -31,6 +31,8 @@ import { DefaultPoint } from '../defaults'
         })
 
         onDragEnd && onDragEnd(dragPosition)
+
+        // console.log('snapTargetModel: ', snapTargetModel)
         // const { getSnappableByID } = context
         // const snappable = getSnappableByID(snapTargetID)
         // const { target } = snappable
