@@ -3,42 +3,40 @@ import PropTypes from 'prop-types'
 
 import { makeUID } from './utils'
 
-const snapTargets = {}
+const mountedEntities = {}
 
 export default class DragContext extends React.Component {
     static childContextTypes = {
-        registerSnapTarget: PropTypes.func,
-        unregisterSnapTarget: PropTypes.func,
-        getSnapTargetsByType: PropTypes.func,
-        getSnapTargetByID: PropTypes.func
+        registerMountedEntity: PropTypes.func,
+        unregisterMountedEntity: PropTypes.func,
+        getMountedEntityByID: PropTypes.func,
+        getMountedEntitiesByType: PropTypes.func
     }
-    registerSnapTarget = (type, strength, target) => {
+    registerMountedEntity = (id, model, mountedElement) => {
         // console.log('Registering snap target')
-        const id = makeUID()
-
-        snapTargets[id] = {
-            id,
-            type,
-            strength,
-            target
+        mountedEntities[id] = {
+            model, mountedElement
         }
+
+        console.log(`[DragContext] entity count: ${Object.keys(mountedEntities).length}`)
+
+        return id
     }
-    unregisterSnapTarget = id => {
-        delete snapTargets[id]
+    unregisterMountedEntity = id => {
+        delete mountedEntities[id]
     }
-    getSnapTargetByID = id => snapTargets[id]
-    getSnapTargetsByType = types =>
+    getMountedEntityByID = id => mountedEntities[id]
+    getMountedEntitiesByType = types =>
         Object
-            .keys(snapTargets)
-            .map(key => snapTargets[key])
-            .filter(({ type }) => types.indexOf(type) > -1)
+            .keys(mountedEntities)
+            .map(key => mountedEntities[key])
+            .filter(({ model: { type } }) => (Array.isArray(types) ? types : [types]).indexOf(type) > -1)
 
     getChildContext() {
+        const { registerMountedEntity, unregisterMountedEntity, getMountedEntityByID, getMountedEntitiesByType } = this
+
         return {
-            registerSnapTarget: this.registerSnapTarget,
-            unregisterSnapTarget: this.unregisterSnapTarget,
-            getSnapTargetsByType: this.getSnapTargetsByType,
-            getSnapTargetByID: this.getSnapTargetByID
+            registerMountedEntity, unregisterMountedEntity, getMountedEntityByID, getMountedEntitiesByType
         }
     }
     render() {

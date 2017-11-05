@@ -6,7 +6,9 @@ import PropTypes from 'prop-types'
 import { Point } from '../conf'
 import PointShell from './PointShell'
 import { DefaultPoint } from '../defaults'
+import { entityComponent } from '../utils'
 
+@entityComponent()
 export default class LinkShell extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,

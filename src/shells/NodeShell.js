@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { draggable } from '../utils'
+import { draggable, entityComponent } from '../utils'
 import { Port } from '../conf'
 import PortShell from './PortShell'
 
+@entityComponent()
 @draggable({
     onDragEnd: (event, props, context) => {
         const { dragPosition } = event

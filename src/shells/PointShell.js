@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { draggable, DraggableElementSVG } from '../utils'
+import { draggable, DraggableElementSVG, entityComponent } from '../utils'
 import { DefaultPoint } from '../defaults'
 
+@entityComponent()
 @draggable({
     draggableElement: DraggableElementSVG,
     toPositionAttributes: (x, y) => ({x, y}),
