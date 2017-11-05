@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 import { draggable, DraggableElementSVG, entityComponent } from '../utils'
 import { DefaultPoint } from '../defaults'
 
-@entityComponent()
+@entityComponent({
+    entityType: 'point'
+})
 @draggable({
     draggableElement: DraggableElementSVG,
     toPositionAttributes: (x, y) => ({x, y}),

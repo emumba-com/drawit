@@ -1,14 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { entityComponent } from '../utils'
+import { entityComponent, snapTarget } from '../utils'
 
-/*
 @snapTarget({
     type: 'port',
     strength: 10
 })
-*/
-@entityComponent()
+@entityComponent({
+    entityType: 'port'
+})
 export default class PortShell extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,

@@ -5,7 +5,9 @@ import { draggable, entityComponent } from '../utils'
 import { Port } from '../conf'
 import PortShell from './PortShell'
 
-@entityComponent()
+@entityComponent({
+    entityType: 'node'
+})
 @draggable({
     onDragEnd: (event, props, context) => {
         const { dragPosition } = event

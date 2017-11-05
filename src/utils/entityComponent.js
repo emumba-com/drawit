@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 export default (pOptions = {}) => WrappedElement => {
     const options = {
+        entityType: 'node',
         getModel: props => props.model,
         ...pOptions
     }
@@ -13,7 +14,7 @@ export default (pOptions = {}) => WrappedElement => {
         }
         componentDidMount() {
             const model = options.getModel(this.props)
-            this.targetID = this.context.registerMountedEntity(model.id, model, this)
+            this.targetID = this.context.registerMountedEntity(model.id, options.entityType, model, this)
         }
         componentWillUnmount() {
             this.context.unregisterMountedEntity(this.targetID)

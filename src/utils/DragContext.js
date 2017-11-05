@@ -12,13 +12,13 @@ export default class DragContext extends React.Component {
         getMountedEntityByID: PropTypes.func,
         getMountedEntitiesByType: PropTypes.func
     }
-    registerMountedEntity = (id, model, mountedElement) => {
+    registerMountedEntity = (id, type, model, mountedElement) => {
         // console.log('Registering snap target')
         mountedEntities[id] = {
-            model, mountedElement
+            id, type, model, mountedElement
         }
 
-        console.log(`[DragContext] entity count: ${Object.keys(mountedEntities).length}`)
+        // console.log(`[DragContext] entity count: ${Object.keys(mountedEntities).length}`)
 
         return id
     }
@@ -30,7 +30,7 @@ export default class DragContext extends React.Component {
         Object
             .keys(mountedEntities)
             .map(key => mountedEntities[key])
-            .filter(({ model: { type } }) => (Array.isArray(types) ? types : [types]).indexOf(type) > -1)
+            .filter(({ type }) => (Array.isArray(types) ? types : [types]).indexOf(type) > -1)
 
     getChildContext() {
         const { registerMountedEntity, unregisterMountedEntity, getMountedEntityByID, getMountedEntitiesByType } = this

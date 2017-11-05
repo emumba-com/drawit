@@ -14,9 +14,10 @@ const isPointWithinRect = (p, r) => {
 }
 
 const getSnapTargetInRange = (point, snapTargets) =>
-    snapTargets.find(({ target, strength }) => {
+    snapTargets.find(({ mountedElement, strength = 10 }) => {
         // console.log('[getSnapTargetInRange]: snapTargets: ', snapTargets)
-        const node = ReactDOM.findDOMNode(target)
+
+        const node = ReactDOM.findDOMNode(mountedElement)
         const rect = node.getBoundingClientRect()
         
         const width = rect.width * strength
@@ -27,8 +28,8 @@ const getSnapTargetInRange = (point, snapTargets) =>
         return isPointWithinRect(point, {x, y, width, height})
     })
 
-const getCenterPoint = (x, y, { target }) => {
-    const node = ReactDOM.findDOMNode(target)
+const getCenterPoint = (x, y, { mountedElement }) => {
+    const node = ReactDOM.findDOMNode(mountedElement)
     const rect = node.getBoundingClientRect()
     
     return {
@@ -48,7 +49,7 @@ class Draggable extends React.Component {
     }
 
     static contextTypes = {
-        getSnapTargetsByType: PropTypes.func
+        getMountedEntitiesByType: PropTypes.func
     }
 
     static propTypes = {
@@ -100,7 +101,7 @@ class Draggable extends React.Component {
         const x = pageX - relX
         const y = pageY - relY
 
-        const snapTargets = this.context.getSnapTargetsByType( snapTargetTypes )
+        const snapTargets = this.context.getMountedEntitiesByType( snapTargetTypes )
         // console.log(`snapTargets found: `, snapTargets, `against: `, snapTargetTypes)
         const snapTarget = getSnapTargetInRange({x: x + offsetX, y: y + offsetY}, snapTargets)
 
@@ -165,7 +166,7 @@ export default (pOptions = {}) => WrappedElement => {
         }
 
         static contextTypes = {
-            getSnapTargetByID: PropTypes.func
+            getMountedEntityByID: PropTypes.func
         }    
 
         constructor(props) {
@@ -213,13 +214,13 @@ export default (pOptions = {}) => WrappedElement => {
                 isDragging: false
             })
 
-            const { getSnapTargetByID } = this.context
+            const { getMountedEntityByID } = this.context
             const { x, y, isSnapped, snapTargetID } = this.state
             let snapTargetModel
 
             if ( isSnapped ) {
-                const snapTarget = getSnapTargetByID(snapTargetID)
-                const { target } = snapTarget
+                const snapTarget = getMountedEntityByID(snapTargetID)
+                const { mountedElement: target } = snapTarget
                 snapTargetModel = target.props.model
             }
 
