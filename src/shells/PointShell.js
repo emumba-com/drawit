@@ -1,34 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { draggable, DraggableElementSVG, entityComponent } from '../utils'
+import { draggable, DraggableElementSVG, entityComponent, movable } from '../utils'
 import { DefaultPoint } from '../defaults'
 
 @entityComponent({
     entityType: 'point'
 })
-@draggable({
+@draggable()
+@movable({
     draggableElement: DraggableElementSVG,
     toPositionAttributes: (x, y) => ({x, y}),
-    snapTargets: ['port'],
-
-    onDragStart: (event, props, context) => {
+    onDragStart: (event, props) => {
         const { onDragStart } = props
-        const { dragPosition } = event
+        const { relX: x, relY: y } = event
         
-        onDragStart && onDragStart(dragPosition)
+        onDragStart && onDragStart({ x, y })
     },
-    onDrag: (event, props, context) => {
+    onDrag: (event, props) => {
         const { onDrag } = props
-        const { dragPosition } = event
+        const { dx: x, dy: y } = event
 
-        onDrag && onDrag(dragPosition)
+        // console.log('[PointShell/movable/onDrag] triggered', event)
+        onDrag && onDrag({ x, y })
     },
     onDragEnd: (event, props) => {
-        const { dragPosition, isSnapped, snapTargetModel } = event
+        const { dx: x, dy: y, isSnapped, snapTargetModel } = event
         const { onChangeEntityModel, model, onDragEnd } = props
-        const nextPointModel = {...model, ...dragPosition}
+        const nextPointModel = {...model, x, y}
 
+        /*
         if ( snapTargetModel ) {
             nextPointModel.dockTarget = snapTargetModel.id
 
@@ -44,10 +45,11 @@ import { DefaultPoint } from '../defaults'
 
             onChangeEntityModel('ports', nextPortModel)
         }
+        */
 
         onChangeEntityModel('points', nextPointModel)
 
-        onDragEnd && onDragEnd(dragPosition)
+        onDragEnd && onDragEnd({x, y})
 
         // console.log('snapTargetModel: ', snapTargetModel)
         // const { getSnappableByID } = context

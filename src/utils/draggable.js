@@ -12,8 +12,9 @@ export default (options = {}) => WrappedElement => {
     } = options
 
     return @eventSource() class Draggable extends React.Component {
-        onMouseDown = e => {
+        handleMouseDown = e => {
             if (e.button !== 0) return
+            // console.log('handleMouseDown: ', e)
     
             const { x, y, offsetX, offsetY, triggerEvent, model } = this.props
     
@@ -104,15 +105,7 @@ export default (options = {}) => WrappedElement => {
         }
 
         render() {
-            const x = 0, y = 0;
-            return (
-                <DraggableElement
-                    onMouseDown={this.onMouseDown}
-                    className="Drawit--Draggable"
-                    {...toPositionAttributes(x, y)}>
-                    <WrappedElement {...this.props}/>
-                </DraggableElement>
-            )
+            return <WrappedElement onMouseDown={this.handleMouseDown} {...this.props}/>
         }
     }
 }

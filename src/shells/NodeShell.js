@@ -8,6 +8,7 @@ import PortShell from './PortShell'
 @entityComponent({
     entityType: 'node'
 })
+@draggable()
 @movable({
     onDragEnd: (event, props) => {
         const { dx: x, dy: y } = event
@@ -21,7 +22,6 @@ import PortShell from './PortShell'
         onDragEnd && onDragEnd({x, y})
     }
 })
-@draggable()
 export default class NodeShell extends React.Component {
     static propTypes = {
         value: PropTypes.object.isRequired,

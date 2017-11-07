@@ -1,14 +1,24 @@
 import React from 'react'
 import Observer from './Observer'
 
+import DraggableElementHTML from './DraggableElementHTML'
+
 export default (pOptions = {}) => WrappedElement => {
     const options = {
+        draggableElement: DraggableElementHTML,
         toPositionAttributes: (left, top) => ({style: {left, top}}),
+        onDragStart: () => {},
+        onDrag: () => {},
         onDragEnd: () => {},
         ...pOptions
     }
 
-    const { toPositionAttributes, onDragEnd } = options
+    const {
+        toPositionAttributes,
+        onDragStart,
+        onDrag,
+        onDragEnd,
+        draggableElement: DraggableElement } = options
 
     return class Movable extends React.Component {
         constructor(props) {
@@ -30,13 +40,24 @@ export default (pOptions = {}) => WrappedElement => {
                 isDragging: true,
                 dragSource
             })
+
+            const { dx, dy } = this.state
+
+            onDragStart({
+                dx, dy
+            }, this.props)
         }
         handleDrag = e => {
             const { dx, dy } = e
+            // console.log(e)
 
             this.setState({
                 dx, dy
             })
+
+            onDrag({
+                dx, dy
+            }, this.props)
         }
         handleDragEnd = e => {
             this.setState({
@@ -54,15 +75,15 @@ export default (pOptions = {}) => WrappedElement => {
         }
         render() {
             const { dx, dy } = this.state
-            const { model } = this.props
+            const { model, onMouseDown } = this.props
 
             return (
-                <div className="Drawit--Movable" {...toPositionAttributes(dx, dy)}>
+                <DraggableElement onMouseDown={onMouseDown} className="Drawit--Movable" {...toPositionAttributes(dx, dy)}>
                     <WrappedElement {...this.props} {...this.state}/>
                     <Observer event="drag-start" id={model.id} handler={this.handleDragStart}/>
                     <Observer event="drag" id={model.id} handler={this.handleDrag}/>
                     <Observer event="drag-end" id={model.id} handler={this.handleDragEnd}/>
-                </div>
+                </DraggableElement>
             )
         }
     }
