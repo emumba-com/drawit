@@ -28,6 +28,7 @@ export default (pOptions = {}) => WrappedElement => {
 
             this.state = {
                 isDragging: false,
+                isSnapped: false,
                 dx: x,
                 dy: y,
                 dragSource: null
@@ -38,6 +39,7 @@ export default (pOptions = {}) => WrappedElement => {
 
             this.setState({
                 isDragging: true,
+                isSnapped: false,
                 dragSource
             })
 
@@ -48,20 +50,23 @@ export default (pOptions = {}) => WrappedElement => {
             }, this.props)
         }
         handleDrag = e => {
-            const { dx, dy } = e
+            const { dx, dy, isSnapped } = e
             // console.log(e)
 
             this.setState({
-                dx, dy
+                dx, dy, isSnapped
             })
 
             onDrag({
-                dx, dy
+                dx, dy, isSnapped
             }, this.props)
         }
         handleDragEnd = e => {
+            const { isSnapped } = e
+
             this.setState({
                 isDragging: false,
+                isSnapped,
                 dragSource: null
             })
 
@@ -70,6 +75,7 @@ export default (pOptions = {}) => WrappedElement => {
             onDragEnd({
                 dx,
                 dy,
+                isSnapped,
                 ...e
             }, this.props)
         }

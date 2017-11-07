@@ -7,7 +7,9 @@ import { DefaultPoint } from '../defaults'
 @entityComponent({
     entityType: 'point'
 })
-@draggable()
+@draggable({
+    snapTargets: ['port']
+})
 @movable({
     draggableElement: DraggableElementSVG,
     toPositionAttributes: (x, y) => ({x, y}),

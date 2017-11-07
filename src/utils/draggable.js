@@ -1,17 +1,57 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import PropTypes from 'prop-types'
 
 // src
 import DraggableElementHTML from './DraggableElementHTML'
 import eventSource from './eventSource'
 
+const isPointWithinRect = (p, r) => {
+    const o = p.x > r.x && p.x < (r.x + r.width) && p.y > r.y && p.y < (r.y + r.height)
+    // console.log(`is p[${p.x}, ${p.y}] within r[${r.x}, ${r.y}, ${r.width}, ${r.height}] = ${o}`)
+
+    return o
+}
+
+const getSnapTargetInRange = (point, snapTargets) =>
+    snapTargets.find(({ mountedElement, strength = 10 }) => {
+        // console.log('[getSnapTargetInRange]: snapTargets: ', snapTargets)
+
+        const node = ReactDOM.findDOMNode(mountedElement)
+        const rect = node.getBoundingClientRect()
+        
+        const width = rect.width * strength
+        const height = rect.height * strength
+        const x = rect.x - ( width - rect.width ) / 2
+        const y = rect.y - ( height - rect.height ) / 2
+
+        return isPointWithinRect(point, {x, y, width, height})
+    })
+
+const getCenterPoint = (x, y, { mountedElement }) => {
+    const node = ReactDOM.findDOMNode(mountedElement)
+    const rect = node.getBoundingClientRect()
+    
+    return {
+        x: rect.x + rect.width / 2,
+        y: rect.y + rect.height / 2
+    }
+}
+
+const getRelativePoint = ({x, y}) => ({x, y})
+
 export default (options = {}) => WrappedElement => {
     const {
         toPositionAttributes = (left, top) => ({style: {left, top}}),
-        draggableElement: DraggableElement = DraggableElementHTML
+        draggableElement: DraggableElement = DraggableElementHTML,
+        snapTargets: snapTargetTypes = []
     } = options
 
     return @eventSource() class Draggable extends React.Component {
+        static contextTypes = {
+            getMountedEntitiesByType: PropTypes.func
+        }
+
         handleMouseDown = e => {
             if (e.button !== 0) return
             // console.log('handleMouseDown: ', e)
@@ -48,36 +88,40 @@ export default (options = {}) => WrappedElement => {
             e.preventDefault()
     
             const { relX, relY } = this.state
-            const { snapTargets: snapTargetTypes, offsetX, offsetY, triggerEvent, model } = this.props
+            const { offsetX, offsetY, triggerEvent, model } = this.props
             const { pageX, pageY } = e
             const dx = pageX - relX
             const dy = pageY - relY
 
             // console.log(x, y)
-            triggerEvent('drag', model.id, {
-                dx,
-                dy,
-                model
-            })
 
-            /*
             const snapTargets = this.context.getMountedEntitiesByType( snapTargetTypes )
             // console.log(`snapTargets found: `, snapTargets, `against: `, snapTargetTypes)
-            const snapTarget = getSnapTargetInRange({x: x + offsetX, y: y + offsetY}, snapTargets)
+            const snapTarget = getSnapTargetInRange({x: dx + offsetX, y: dy + offsetY}, snapTargets)
+            // console.log(`[draggable] snapTarget: `, snapTarget)
 
             if ( !snapTarget ) {
+                /*
                 this.props.onMove({
                     x, y, isSnapped: false, snapTargetID: null
+                })
+                */
+
+                triggerEvent('drag', model.id, {
+                    dx,
+                    dy,
+                    model,
+                    isSnapped: false,
+                    snapTargetID: null
                 })
     
                 return
             }
-            */
     
-            /*
             // console.log('snapTarget detected: ', snapTarget)
-            const { x: cx, y: cy } = getCenterPoint(x, y, snapTarget)
-    
+            const { x: cx, y: cy } = getCenterPoint(dx, dy, snapTarget)
+            
+            /*
             this.props.onMove({
                 x: cx - offsetX,
                 y: cy - offsetY,
@@ -85,6 +129,14 @@ export default (options = {}) => WrappedElement => {
                 snapTargetID: snapTarget.id
             })
             */
+
+            triggerEvent('drag', model.id, {
+                dx: cx - offsetX,
+                dy: cy - offsetY,
+                isSnapped: true,
+                snapTargetID: snapTarget.id,
+                model
+            })
             
             // is near a snapTarget
             // if yes, move to center of the snapTarget
