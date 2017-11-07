@@ -1,30 +1,27 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { draggable, entityComponent } from '../utils'
+import { draggable, entityComponent, movable } from '../utils'
 import { Port } from '../conf'
 import PortShell from './PortShell'
 
 @entityComponent({
     entityType: 'node'
 })
-@draggable({
-    onDragEnd: (event, props, context) => {
-        const { dragPosition } = event
-        const { onChange, model, onDragEnd } = props
+@movable({
+    onDragEnd: (event, props) => {
+        const { dx: x, dy: y } = event
+        const { onChangeEntityModel, model, onDragEnd } = props
 
-        onChange({
+        onChangeEntityModel('nodes', {
             ...model,
-            ...dragPosition
+            x, y
         })
 
-        onDragEnd && onDragEnd(dragPosition)
-        // const { getSnappableByID } = context
-        // const snappable = getSnappableByID(snapTargetID)
-        // const { target } = snappable
-        // const {}
+        onDragEnd && onDragEnd({x, y})
     }
 })
+@draggable()
 export default class NodeShell extends React.Component {
     static propTypes = {
         value: PropTypes.object.isRequired,
@@ -32,13 +29,13 @@ export default class NodeShell extends React.Component {
         conf: PropTypes.object.isRequired,
         offsetX: PropTypes.number,
         offsetY: PropTypes.number,
-        onChange: PropTypes.func,
+        onChangeEntityModel: PropTypes.func,
 
         // inserted by draggable
         isDragging: PropTypes.bool
     }
     render() {
-        const { value, model, conf, offsetX, offsetY, onChange, isDragging } = this.props
+        const { value, model, conf, offsetX, offsetY, isDragging } = this.props
         const { positions, component: NodeComponent } = conf
         // const { component: NodeComponent, children } = node.props
         // const ports = children ? React.Children.toArray(children).filter(child => child.type === Port) : []

@@ -184,7 +184,7 @@ export default class Diagram extends React.Component {
                     <LayerNodes
                         conf={conf}
                         value={value}
-                        onChangeNodeModel={ this.handleChangeNodeModel }/>
+                        onChangeEntityModel={ this.handleChangeEntityModel }/>
                     <LayerLinks
                         conf={conf}
                         value={value}
