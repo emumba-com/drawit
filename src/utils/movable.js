@@ -32,8 +32,10 @@ export default (pOptions = {}) => WrappedElement => {
             this.state = {
                 isDragging: false,
                 isSnapped: false,
-                dx: x,
-                dy: y,
+                initX: x,
+                initY: y,
+                x,
+                y,
                 dragSource: null
             }
         }
@@ -46,22 +48,32 @@ export default (pOptions = {}) => WrappedElement => {
                 dragSource
             })
 
-            const { dx, dy } = this.state
+            const { x, y } = this.state
+
+            this.setState({
+                initX: x,
+                initY: y
+            })
 
             onDragStart({
-                dx, dy
+                x, y
             }, this.props)
         }
         handleDrag = e => {
             const { dx, dy, isSnapped } = e
+            const { initX, initY } = this.state
+            const x = dx + initX
+            const y = dy + initY
             // console.log(e)
 
             this.setState({
-                dx, dy, isSnapped
+                x,
+                y,
+                isSnapped
             })
 
             onDrag({
-                dx, dy, isSnapped
+                x, y, isSnapped
             }, this.props)
         }
         handleDragEnd = e => {
@@ -73,11 +85,11 @@ export default (pOptions = {}) => WrappedElement => {
                 dragSource: null
             })
 
-            const { dx, dy } = this.state
+            const { x, y } = this.state
 
             onDragEnd({
-                dx,
-                dy,
+                x,
+                y,
                 isSnapped,
                 ...e
             }, this.props)
@@ -131,11 +143,11 @@ export default (pOptions = {}) => WrappedElement => {
             }, this.props)
         }
         render() {
-            const { dx, dy } = this.state
+            const { x, y } = this.state
             const { model, onMouseDown } = this.props
 
             return (
-                <DraggableElement onMouseDown={onMouseDown} className="Drawit--Movable" {...toPositionAttributes(dx, dy)}>
+                <DraggableElement onMouseDown={onMouseDown} className="Drawit--Movable" {...toPositionAttributes(x, y)}>
                     <WrappedElement {...this.props} {...this.state}/>
                     <Observer event="drag-start" id={model.id} handler={this.handleDragStart}/>
                     <Observer event="drag" id={model.id} handler={this.handleDrag}/>

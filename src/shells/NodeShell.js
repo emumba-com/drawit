@@ -11,7 +11,7 @@ import PortShell from './PortShell'
 @draggable()
 @movable({
     onDragEnd: (event, props) => {
-        const { dx: x, dy: y } = event
+        const { x, y } = event
         const { onChangeEntityModel, model, onDragEnd } = props
 
         onChangeEntityModel('nodes', {

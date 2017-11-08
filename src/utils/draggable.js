@@ -53,7 +53,14 @@ export default (options = {}) => WrappedElement => {
             getMountedEntityByID: PropTypes.func
         }
 
-        state = { relX: 0, relY: 0, snapTarget: null }
+        state = {
+            relX: 0,
+            relY: 0,
+            snapTarget: null,
+
+            initPageX: 0,
+            initPageY: 0
+        }
 
         handleMouseDown = e => {
             if (e.button !== 0) return
@@ -65,22 +72,22 @@ export default (options = {}) => WrappedElement => {
             const body = document.body
             const box = ref.getBoundingClientRect()
     
-            const relX = e.pageX - (box.left + window.scrollX - offsetX)
-            const relY = e.pageY - (box.top + window.scrollY - offsetY)
+            // const relX = e.pageX - (box.left + window.scrollX - offsetX)
+            // const relY = e.pageY - (box.top + window.scrollY - offsetY)
     
             // console.log(`${relX} = ${e.pageX} - (${box.left} + ${window.scrollX} + ${offsetX})`)
             // console.log(`${relY} = ${e.pageY} - (${box.top} + ${window.scrollY} - ${offsetY})`)
     
             this.setState({
-                relX, 
-                relY,
+                // relX,
+                // relY,
+                initPageX: e.pageX,
+                initPageY: e.pageY,
                 snapTarget: null
             })
 
             triggerEvent('drag-start', model.id, {
-                model,
-                relX,
-                relY
+                model
             })
     
             document.addEventListener('mousemove', this.handleMouseMove);
@@ -91,11 +98,15 @@ export default (options = {}) => WrappedElement => {
         handleMouseMove = e => {
             e.preventDefault()
     
-            const { relX, relY } = this.state
+            // const { relX, relY } = this.state
+            const { initPageX, initPageY } = this.state
             const { offsetX, offsetY, triggerEvent, model } = this.props
             const { pageX, pageY } = e
-            const dx = pageX - relX
-            const dy = pageY - relY
+            // const dx = pageX - relX
+            // const dy = pageY - relY
+
+            const dx = pageX - initPageX
+            const dy = pageY - initPageY
 
             // console.log(x, y)
 

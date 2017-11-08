@@ -28,19 +28,19 @@ import { DefaultPoint } from '../defaults'
     },
     onDragStart: (event, props) => {
         const { onDragStart } = props
-        const { relX: x, relY: y } = event
+        const { x, y } = event
         
         onDragStart && onDragStart({ x, y })
     },
     onDrag: (event, props) => {
         const { onDrag } = props
-        const { dx: x, dy: y } = event
+        const { x, y } = event
 
         // console.log('[PointShell/movable/onDrag] triggered', event)
         onDrag && onDrag({ x, y })
     },
     onDragEnd: (event, props) => {
-        const { dx: x, dy: y, isSnapped, snapTarget: snapTargetModel } = event
+        const { x, y, isSnapped, snapTarget: snapTargetModel } = event
         const { onChangeEntityModel, model, onDragEnd } = props
         const nextPointModel = {...model, x, y}
 
