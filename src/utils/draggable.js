@@ -5,40 +5,7 @@ import PropTypes from 'prop-types'
 // src
 import DraggableElementHTML from './DraggableElementHTML'
 import eventSource from './eventSource'
-
-const isPointWithinRect = (p, r) => {
-    const o = p.x > r.x && p.x < (r.x + r.width) && p.y > r.y && p.y < (r.y + r.height)
-    // console.log(`is p[${p.x}, ${p.y}] within r[${r.x}, ${r.y}, ${r.width}, ${r.height}] = ${o}`)
-
-    return o
-}
-
-const getSnapTargetInRange = (point, snapTargets) =>
-    snapTargets.find(({ mountedElement, strength = 10 }) => {
-        // console.log('[getSnapTargetInRange]: snapTargets: ', snapTargets)
-
-        const node = ReactDOM.findDOMNode(mountedElement)
-        const rect = node.getBoundingClientRect()
-        
-        const width = rect.width * strength
-        const height = rect.height * strength
-        const x = rect.x - ( width - rect.width ) / 2
-        const y = rect.y - ( height - rect.height ) / 2
-
-        return isPointWithinRect(point, {x, y, width, height})
-    })
-
-const getCenterPoint = (x, y, { mountedElement }) => {
-    const node = ReactDOM.findDOMNode(mountedElement)
-    const rect = node.getBoundingClientRect()
-    
-    return {
-        x: rect.x + rect.width / 2,
-        y: rect.y + rect.height / 2
-    }
-}
-
-const getRelativePoint = ({x, y}) => ({x, y})
+import { getSnapTargetInRange, getCenterPoint } from './utils'
 
 export default (options = {}) => WrappedElement => {
     const {
@@ -53,20 +20,29 @@ export default (options = {}) => WrappedElement => {
             getMountedEntityByID: PropTypes.func
         }
 
-        state = {
-            relX: 0,
-            relY: 0,
-            snapTarget: null,
+        constructor(props) {
+            super(props)
+            const { model } = this.props
+            const { x, y } = model
 
-            initPageX: 0,
-            initPageY: 0
+            this.state = {
+                relX: 0,
+                relY: 0,
+                snapTarget: null,
+    
+                initPageX: 0,
+                initPageY: 0,
+                initX: x,
+                initY: y
+            }
         }
 
         handleMouseDown = e => {
             if (e.button !== 0) return
             // console.log('handleMouseDown: ', e)
     
-            const { x, y, offsetX, offsetY, triggerEvent, model } = this.props
+            const { offsetX, offsetY, triggerEvent, model } = this.props
+            const { x, y } = model
     
             const ref = ReactDOM.findDOMNode(this)
             const body = document.body
@@ -83,7 +59,9 @@ export default (options = {}) => WrappedElement => {
                 // relY,
                 initPageX: e.pageX,
                 initPageY: e.pageY,
-                snapTarget: null
+                snapTarget: null,
+                initX: x,
+                initY: y
             })
 
             triggerEvent('drag-start', model.id, {
@@ -99,7 +77,7 @@ export default (options = {}) => WrappedElement => {
             e.preventDefault()
     
             // const { relX, relY } = this.state
-            const { initPageX, initPageY } = this.state
+            const { initPageX, initPageY, initX, initY } = this.state
             const { offsetX, offsetY, triggerEvent, model } = this.props
             const { pageX, pageY } = e
             // const dx = pageX - relX
@@ -107,12 +85,15 @@ export default (options = {}) => WrappedElement => {
 
             const dx = pageX - initPageX
             const dy = pageY - initPageY
+            const x = dx + initX
+            const y = dy + initY
 
             // console.log(x, y)
 
             const snapTargets = this.context.getMountedEntitiesByType( snapTargetTypes )
             // console.log(`snapTargets found: `, snapTargets, `against: `, snapTargetTypes)
-            const snapTarget = getSnapTargetInRange({x: dx + offsetX, y: dy + offsetY}, snapTargets)
+            // const snapTarget = getSnapTargetInRange({x: dx + offsetX, y: dy + offsetY}, snapTargets)
+            const snapTarget = getSnapTargetInRange({x: x + offsetX, y: y + offsetY}, snapTargets)
             // console.log(`[draggable] snapTarget: `, snapTarget)
 
             this.setState({
@@ -138,7 +119,7 @@ export default (options = {}) => WrappedElement => {
             }
     
             // console.log('snapTarget detected: ', snapTarget)
-            const { x: cx, y: cy } = getCenterPoint(dx, dy, snapTarget)
+            const { x: cx, y: cy } = getCenterPoint(snapTarget)
             
             /*
             this.props.onMove({
@@ -150,11 +131,11 @@ export default (options = {}) => WrappedElement => {
             */
 
             triggerEvent('drag', model.id, {
-                dx: cx - offsetX,
-                dy: cy - offsetY,
+                dx: dx + cx - x - offsetX,
+                dy: dy + cy - y - offsetY,
+                model,
                 isSnapped: true,
-                snapTarget,
-                model
+                snapTarget
             })
             
             // is near a snapTarget
