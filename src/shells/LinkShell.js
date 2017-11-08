@@ -64,7 +64,8 @@ export default class LinkShell extends React.Component {
                         <PointShell
                             key={index}
                             index={index}
-                            model={value.points[p]}                            
+                            model={value.points[p]}     
+                            value={value}                       
                             conf={conf.points[value.points[p].type]}
                             offsetX={offsetX}
                             offsetY={offsetY}

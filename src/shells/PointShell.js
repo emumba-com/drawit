@@ -13,6 +13,19 @@ import { DefaultPoint } from '../defaults'
 @movable({
     draggableElement: DraggableElementSVG,
     toPositionAttributes: (x, y) => ({x, y}),
+    getDockTargets: ({ model, value }) => {
+        const { dockTarget } = model
+        const output = []
+
+        if ( dockTarget ) {
+            const port = value.ports[dockTarget]
+            output.push(port.parentID)
+
+            // console.log(`[movable/getDockTarget] output: `, output)
+        }
+
+        return output
+    },
     onDragStart: (event, props) => {
         const { onDragStart } = props
         const { relX: x, relY: y } = event
