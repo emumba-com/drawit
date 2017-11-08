@@ -62,7 +62,7 @@ export default class DragContext extends React.Component {
     removeEventListener = (event = 'default', id = 'default', listener) => {
         ensureListenerStructure(event, id)
 
-        listeners[event][id].splice(listeners[event].indexOf(handler), 1)
+        listeners[event][id].splice(listeners[event][id].indexOf(listener), 1)
     }
 
     getChildContext() {

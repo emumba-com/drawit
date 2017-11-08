@@ -49,8 +49,11 @@ export default (options = {}) => WrappedElement => {
 
     return @eventSource() class Draggable extends React.Component {
         static contextTypes = {
-            getMountedEntitiesByType: PropTypes.func
+            getMountedEntitiesByType: PropTypes.func,
+            getMountedEntityByID: PropTypes.func
         }
+
+        state = { relX: 0, relY: 0, snapTarget: null }
 
         handleMouseDown = e => {
             if (e.button !== 0) return
@@ -70,7 +73,8 @@ export default (options = {}) => WrappedElement => {
     
             this.setState({
                 relX, 
-                relY
+                relY,
+                snapTarget: null
             })
 
             triggerEvent('drag-start', model.id, {
@@ -99,6 +103,10 @@ export default (options = {}) => WrappedElement => {
             // console.log(`snapTargets found: `, snapTargets, `against: `, snapTargetTypes)
             const snapTarget = getSnapTargetInRange({x: dx + offsetX, y: dy + offsetY}, snapTargets)
             // console.log(`[draggable] snapTarget: `, snapTarget)
+
+            this.setState({
+                snapTarget: snapTarget && snapTarget.model
+            })
 
             if ( !snapTarget ) {
                 /*
@@ -134,7 +142,7 @@ export default (options = {}) => WrappedElement => {
                 dx: cx - offsetX,
                 dy: cy - offsetY,
                 isSnapped: true,
-                snapTargetID: snapTarget.id,
+                snapTarget,
                 model
             })
             
@@ -146,9 +154,10 @@ export default (options = {}) => WrappedElement => {
 
         handleMouseUp = e => {
             const { triggerEvent, model } = this.props
+            const { snapTarget } = this.state
 
             triggerEvent('drag-end', model.id, {
-                model
+                model, snapTarget
             })
 
             document.removeEventListener('mousemove', this.handleMouseMove);

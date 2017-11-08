@@ -40,11 +40,10 @@ import { DefaultPoint } from '../defaults'
         onDrag && onDrag({ x, y })
     },
     onDragEnd: (event, props) => {
-        const { dx: x, dy: y, isSnapped, snapTargetModel } = event
+        const { dx: x, dy: y, isSnapped, snapTarget: snapTargetModel } = event
         const { onChangeEntityModel, model, onDragEnd } = props
         const nextPointModel = {...model, x, y}
 
-        /*
         if ( snapTargetModel ) {
             nextPointModel.dockTarget = snapTargetModel.id
 
@@ -60,7 +59,6 @@ import { DefaultPoint } from '../defaults'
 
             onChangeEntityModel('ports', nextPortModel)
         }
-        */
 
         onChangeEntityModel('points', nextPointModel)
 
