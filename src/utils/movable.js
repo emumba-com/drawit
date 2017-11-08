@@ -95,7 +95,6 @@ export default (pOptions = {}) => WrappedElement => {
             }, this.props)
         }
         handleDockTargetDragStart = e => {
-            // console.log(`[handleDockTargetDragStart]`)
             const { model: dragSource } = e
             
             this.setState({
@@ -104,27 +103,35 @@ export default (pOptions = {}) => WrappedElement => {
                 dragSource
             })
 
-            const { dx, dy } = this.state
+            const { x, y } = this.state
+
+            this.setState({
+                initX: x,
+                initY: y
+            })
 
             onDragStart({
-                dx, dy
+                x, y
             }, this.props)
         }
         handleDockTargetDrag = e => {
-            // console.log(`[handleDockTargetDrag]`)
             const { dx, dy, isSnapped } = e
+            const { initX, initY } = this.state
+            const x = dx + initX
+            const y = dy + initY
             // console.log(e)
 
             this.setState({
-                dx, dy, isSnapped
+                x,
+                y,
+                isSnapped
             })
 
             onDrag({
-                dx, dy, isSnapped
+                x, y, isSnapped
             }, this.props)
         }
         handleDockTargetDragEnd = e => {
-            // console.log(`[handleDockTargetDragEnd]`)
             const { isSnapped } = e
             
             this.setState({
@@ -133,11 +140,11 @@ export default (pOptions = {}) => WrappedElement => {
                 dragSource: null
             })
 
-            const { dx, dy } = this.state
+            const { x, y } = this.state
 
             onDragEnd({
-                dx,
-                dy,
+                x,
+                y,
                 isSnapped,
                 ...e
             }, this.props)
