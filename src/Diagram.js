@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { DefaultNode, DefaultLink } from './defaults'
 import { buildConf, Node, Link } from './conf'
 import { LayerNodes, LayerLinks } from './layers'
-import { makeUID, toCache, DragContext } from './utils'
+import { makeUID, toCache, DragContext, createValueBuilder } from './utils'
 
 const createPortModel = ( pModel = {}, parentID, position ) => {
     /**
@@ -41,6 +41,12 @@ export default class Diagram extends React.Component {
         children: PropTypes.any,
         value: PropTypes.object,
         onChange: PropTypes.func
+    }
+
+    constructor( props ) {
+        super(props)
+
+        this.updateConf(props)
     }
 
     // TODO make this an external func
@@ -171,23 +177,37 @@ export default class Diagram extends React.Component {
     handleChangePointModel = model => this.handleChangeEntityModel('points', model)
     handleChangePortModel = model => this.handleChangeEntityModel('ports', model)
 
+    componentWillReceiveProps( nextProps ) {
+        console.log(`[Diagram/componentWillReceiveProps] invoked ...`)
+        this.updateConf( nextProps )
+    }
+
+    updateConf( props ) {
+        const { onChange } = props
+        this.conf = buildConf(props)
+        this.valueBuilder = createValueBuilder({ onChange, conf: this.conf })
+
+        console.log(`[updateConf] conf: `, this.conf)
+    }
+
     render() {
         const { value: pValue = {}, children } = this.props
         const value = { nodes: {}, links: {}, ports: {}, points: {}, ...pValue }
-        const conf = buildConf(this)
 
         // console.log(`[Diagram] Created conf: `, conf)
+        console.log(`[Diagram/render] invoked ...`)
 
         return (
             <div className="Drawit--Diagram">
                 <DragContext>
                     <LayerNodes
-                        conf={conf}
+                        conf={this.conf}
                         value={value}
                         onChangeEntityModel={ this.handleChangeEntityModel }/>
                     <LayerLinks
-                        conf={conf}
+                        conf={this.conf}
                         value={value}
+                        valueBuilder={this.valueBuilder}
                         onChangeEntityModel={ this.handleChangeEntityModel }/>
                 </DragContext>
             </div>

@@ -24,7 +24,7 @@ export default class LayerLinks extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { value, conf, onChangeEntityModel, onChangePortModel } = this.props
+        const { value, conf, onChangeEntityModel, onChangePortModel, valueBuilder } = this.props
         const { links } = value
 
         return (
@@ -43,6 +43,7 @@ export default class LayerLinks extends React.Component {
                                 conf={conf.links[type]}
                                 offsetX={offsetX}
                                 offsetY={offsetY}
+                                valueBuilder={valueBuilder}
                                 onChangeEntityModel={onChangeEntityModel}
                             />
                         )

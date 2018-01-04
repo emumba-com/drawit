@@ -41,7 +41,7 @@ export default class LinkShell extends React.Component {
     }
     render() {
         const { isDraggingPoint, draggedPoint, draggedPointIndex } = this.state
-        const { value, model, conf, onChangeEntityModel, offsetX, offsetY } = this.props
+        const { value, valueBuilder, model, conf, onChangeEntityModel, offsetX, offsetY } = this.props
         const { component: LinkComponent } = conf
         const { points: pointModels } = model
         const injectibleModel = {
@@ -55,6 +55,8 @@ export default class LinkShell extends React.Component {
         return (
             <g className="Drawit--LinkShell">
                 <LinkComponent
+                    value={value}
+                    valueBuilder={valueBuilder}
                     model={injectibleModel}
                     isDraggingPoint={isDraggingPoint}
                     draggedPoint={draggedPoint}

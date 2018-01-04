@@ -103,7 +103,7 @@ const buildLinkConf = ({ props: { type = 'default', component = DefaultLink, chi
         }, {})
     })
 
-export default ({ props: {children} }) =>
+export default ({ children }) =>
     children.reduce((output, child) => {
         if ( child.type === Node ) {
             const nodeConf = buildNodeConf(child)
