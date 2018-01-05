@@ -210,14 +210,14 @@ export default ({ value, onChange, conf }: Object) => (initialValue: Object) => 
         return builder
     }
 
-    const dockPointToPort = ( _pointID_: string, _portID_: string ) => {
+    const dock = ( _pointID_: string, _portID_: string ) => {
         const pointID = evaluate(_pointID_)
         const portID = evaluate(_portID_)
 
         const port = nextValue.ports[portID]
         const point = nextValue.points[pointID]
 
-        console.log(`[dockPointToPort] point: `, pointID, ', port: ', portID)
+        // console.log(`[dockPointToPort] point: `, pointID, ', port: ', portID)
         const dockedPoints = port.dockedPoints || []
 
         nextValue = {
@@ -241,6 +241,50 @@ export default ({ value, onChange, conf }: Object) => (initialValue: Object) => 
         return builder
     }
 
+    const undock = ( _pointID_: string ) => {
+        const pointID = evaluate(_pointID_)
+        const point = nextValue.points[pointID]
+
+        if ( !point ) {
+            throw `Point with ID[${pointID}] doesn't exist`
+        }
+
+        if ( !point.dockTarget ) {
+            throw `Point[${pointID}] doesn't have a dockTarget`
+        }
+
+        const portID = point.dockTarget
+        const port = nextValue.ports[portID]
+
+        if ( !port ) {
+            throw `Port with ID[${portID}] doesn't exist`
+        }
+
+        if ( !port.dockedPoints ) {
+            throw `Port[${portID}] doesn't have dockedPoints`
+        }
+
+        nextValue = {
+            ...nextValue,
+            points: {
+                ...nextValue.points,
+                [pointID]: {
+                    ...point,
+                    dockTarget: null
+                }
+            },
+            ports: {
+                ...nextValue.ports,
+                [portID]: {
+                    ...port,
+                    dockedPoints: port.dockedPoints.filter(p => p !== pointID)
+                }
+            }
+        }
+
+        return builder
+    }
+
     const replace = ( value: DiagramModel ) => {
         nextValue = value
 
@@ -255,7 +299,7 @@ export default ({ value, onChange, conf }: Object) => (initialValue: Object) => 
     }
 
     Object.assign(builder, {
-        addNode, addLink, dockPointToPort, replace, apply
+        addNode, addLink, dock, undock, replace, apply
     })
 
     return builder
