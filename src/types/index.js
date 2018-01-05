@@ -62,7 +62,9 @@ export type NodeSpecification = {
     type?: string,
     ports?: {
         [string]: PortSpecification
-    }
+    },
+    x?: number,
+    y?: number
 }
 
 export type LinkSpecification = {
@@ -79,7 +81,9 @@ export type PortSpecification = {
 }
 
 export type PointSpecification = {
-    type?: string
+    type?: string,
+    x?: number,
+    y?: number
 }
 
 // --- Configuration --- //
