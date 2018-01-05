@@ -1,16 +1,23 @@
+/* @flow */
+
 import { makeUID, toCache } from './utils'
+import type {
+    PointSpecification,
+    PortSpecification,
+    NodeSpecification,
+    NodeModel,
+    PortModel,
+    LinkModel,
+    PointModel,
+    LinkSpecification,
+    DiagramModel,
+    Configuration
+} from '../types'
 
-const applyDefaultsToPortModelSpec = (modelSpec, conf) => {
-    return {
-        type: 'default',
-        ...modelSpec
-    }
-}
-
-const applyDefaultsToNodeModelSpec = (modelSpec, conf) => {
-    const { type = 'default', ports: _portModelSpecs_ } = modelSpec
+const applyDefaultsToNodeModelSpec = (spec: NodeSpecification, conf: Configuration): NodeSpecification => {
+    const { type = 'default', ports: _portModelSpecs_ } = spec
     const nodeConf = conf.nodes[type]
-
+    
     if ( !nodeConf ) {
         throw `Cannot add node, conf not found for type: ${type}`
     }
@@ -22,72 +29,145 @@ const applyDefaultsToNodeModelSpec = (modelSpec, conf) => {
             return output
         }, {})
     
-    const ports = Object.entries(portModelSpecs)
-        .reduce((output, [key, value]) => {
-            output[key] = applyDefaultsToPortModelSpec(value)
-            return output
-        }, {})
+    const ports =
+        Object
+            .entries(portModelSpecs)
+            .reduce((output, [key, value]) => {
+                // $FlowFixMe
+                output[key] = applyDefaultsToPortModelSpec(value, conf)
+                return output
+            }, {})
 
     return {
         type,
         ports,
-        ...modelSpec
+        ...spec
     }
 }
 
-const applyDefaultsToPointModelSpec = (modelSpec, conf) => {
+const applyDefaultsToLinkModelSpec = (spec: LinkSpecification, conf: Configuration): LinkSpecification => {
+    const { type = 'default', points: _pointModelSpecs_ = [] } = spec
+    const linkConf = conf.links[type]
     
+    if ( !linkConf ) {
+        throw `Cannot add link, conf not found for type: ${type}`
+    }
+
+    if ( _pointModelSpecs_.length < 2 ) {
+        for ( let i = 0, max = 2 - _pointModelSpecs_.length; i < max;  i++) {
+            _pointModelSpecs_.push({})
+        }
+    }
+
+    const points = _pointModelSpecs_.map((pointSpec: PointSpecification, index: number) => applyDefaultsToPointModelSpec(pointSpec, index, conf))
+        
+    return {
+        ...spec,
+        type,
+        points
+    }
 }
 
-const applyDefaultsToLinkModelSpec = (modelSpec, conf) => {
-
+const applyDefaultsToPortModelSpec = (spec: PortSpecification, conf: Configuration): PortSpecification => {
+    return {
+        type: 'default',
+        ...spec
+    }
 }
 
-const buildPortModel = (modelSpec, parentID) => {
+const applyDefaultsToPointModelSpec = (spec: PointSpecification, index: number, conf: Configuration): PointSpecification => {
+    return {
+        type: 'default',
+        x: index * 100,
+        y: index * 100,
+        ...spec
+    }
+}
+
+const buildPortModel = (spec: PortSpecification, parentID: string): PortModel => {
     const id = makeUID()
 
     return {
         id,
         parentID,
-        ...modelSpec
+        ...spec
     }
 }
 
-const buildNodeModel = modelSpec => {
+const buildNodeModel = (spec: NodeSpecification): { model: NodeModel, ports: PortModel[] } => {
     const id = makeUID()
-    const ports = 
-        Object
-        .entries(modelSpec.ports)
-        .reduce((output, [key, portModelSpec]) => {
-            output[key] = buildPortModel( portModelSpec, id )
+    const model: NodeModel = {
+        ...spec,
+        id,
+        ports: {},
+    }
+    const ports = []
+    
+    Object
+        .entries(spec.ports)
+        .forEach(([key, portModelSpec]) => {
+            // $FlowFixMe
+            const port = buildPortModel( portModelSpec, id )
+            ports.push( port )
 
-            return output
+            model.ports[key] = port.id
         }, {})
 
+    
     return {
-        id,
-        ports,
-        ...modelSpec
+        model,
+        ports
     }
 }
 
-export default ({ onChange, conf }) => ( initialValue = {} ) => {
+const buildPointModel = (spec: PointSpecification, parentID: string): PointModel => {
+    const id = makeUID()
+    
+    return {
+        ...spec,
+        id,
+        parentID
+    }
+}
+
+const buildLinkModel = (spec: LinkSpecification): { model: LinkModel, points: PointModel[] } => {
+    const id = makeUID()
+    const model = {
+        ...spec,
+        id,
+        points: [],
+    }
+
+    if ( !spec.points ) {
+        throw `link spec must contain points`
+    }
+
+    const points = spec.points.map((pointSpec: PointSpecification) => buildPointModel(pointSpec, id))
+    model.points = points.map(point => point.id)
+
+    return {
+        model,
+        points
+    }
+}
+
+export default ({ value, onChange, conf }: Object) => (initialValue: Object) => {
     const builder = {}
     const contextObjects = []
-    let nextValue = initialValue
+    let nextValue = initialValue || value || {}
 
-    const addNode = ( _modelSpec_ = {} ) => {
-        const modelSpec = applyDefaultsToNodeModelSpec(_modelSpec_, conf)
-        const model = buildNodeModel( modelSpec )
-        const portModels = toCache(Object.values(model.ports))
+    const evaluate = (param) => {
+        if ( typeof param === 'function' ) {
+            return param.apply(null, [...contextObjects, nextValue])
+        }
 
-        model.ports =
-            Object
-                .entries(model.ports)
-                .reduce((output, [position, portModel]) => {
-                    output[position] = portModel.id
-                    return output
-                }, {})
+        return param
+    }
+
+    const addNode = ( spec: NodeSpecification = {} ) => {
+        const modelSpec = applyDefaultsToNodeModelSpec(spec, conf)
+        const { model, ports } = buildNodeModel( modelSpec )
+        const portModels = toCache( ports )
 
         nextValue = {
             ...nextValue,
@@ -96,6 +176,7 @@ export default ({ onChange, conf }) => ( initialValue = {} ) => {
                 [model.id]: model,
             },
             ports: {
+                // $FlowFixMe
                 ...nextValue.ports,
                 ...portModels
             }
@@ -106,16 +187,63 @@ export default ({ onChange, conf }) => ( initialValue = {} ) => {
         return builder
     }
 
-    const addLink = ( model = {} ) => {
-        console.log(`addLink called`)
+    const addLink = ( spec: LinkSpecification = {} ) => {
+        const modelSpec = applyDefaultsToLinkModelSpec(spec, conf)
+        const { model, points } = buildLinkModel( modelSpec )
+        const pointModels = toCache( points )
+
+        nextValue = {
+            ...nextValue,
+            links: {
+                ...nextValue.links,
+                [model.id]: model
+            },
+            points: {
+                // $FlowFixMe
+                ...nextValue.points,
+                ...pointModels
+            }
+        }
+
+        contextObjects.push( model )
+
         return builder
     }
 
-    const dockPointToPort = ( _pointID_, _portID_ ) => {
-        // const pointID = evaluate(_pointID_)
-        // const portID = evaluate(_portID_)
+    const dockPointToPort = ( _pointID_: string, _portID_: string ) => {
+        const pointID = evaluate(_pointID_)
+        const portID = evaluate(_portID_)
 
-        // console.log(`dockPointToPort called`)
+        const port = nextValue.ports[portID]
+        const point = nextValue.points[pointID]
+
+        console.log(`[dockPointToPort] point: `, pointID, ', port: ', portID)
+        const dockedPoints = port.dockedPoints || []
+
+        nextValue = {
+            ...nextValue,
+            ports: {
+                ...nextValue.ports,
+                [portID]: {
+                    ...port,
+                    dockedPoints: [...dockedPoints, pointID]
+                }
+            },
+            points: {
+                ...nextValue.points,
+                [pointID]: {
+                    ...point,
+                    dockTarget: portID
+                }
+            }
+        }
+
+        return builder
+    }
+
+    const replace = ( value: DiagramModel ) => {
+        nextValue = value
+
         return builder
     }
 
@@ -127,7 +255,7 @@ export default ({ onChange, conf }) => ( initialValue = {} ) => {
     }
 
     Object.assign(builder, {
-        addNode, addLink, dockPointToPort, apply
+        addNode, addLink, dockPointToPort, replace, apply
     })
 
     return builder
