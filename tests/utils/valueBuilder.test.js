@@ -94,4 +94,49 @@ describe('utils/valueBuilder', () => {
         const nextPort = nextValue.ports[initialDockTarget]
         expect(nextPort.dockedPoints).toNotInclude(pointID)
     })
+
+    it('docks a point correctly', () => {
+        let nextValue = value
+        const pointID = '61c3c50b-f2ee-45a4-8d91-74e7941ff5a7'
+        
+        // verify we have a dock target
+        const { dockTarget: initialDockTarget } = nextValue.points[pointID]
+        expect(initialDockTarget).toExist()
+        
+        // verify this port has current point present in its `dockedPoints`
+        const port = nextValue.ports[initialDockTarget]
+        expect(port.dockedPoints).toInclude(pointID)
+
+        // update values with builder
+        const builder = createValueBuilder({
+            value,
+            onChange: _nextValue_ => {
+                nextValue = _nextValue_
+            },
+            conf 
+        })()
+        .undock(pointID)
+        .apply()
+
+        // verify dockTarget is undefined
+        const { dockTarget } = nextValue.points[pointID]
+        expect(dockTarget).toNotExist()
+
+        // verify if node is also updated
+        const nextPort = nextValue.ports[initialDockTarget]
+        expect(nextPort.dockedPoints).toNotInclude(pointID)
+
+        // redock
+        builder
+            .dock(pointID, initialDockTarget)
+            .apply()
+        
+        // verify we have a dock target
+        const { dockTarget: finalDockTarget } = nextValue.points[pointID]
+        expect(finalDockTarget).toExist()
+        
+        // verify this port has current point present in its `dockedPoints`
+        const finalPort = nextValue.ports[finalDockTarget]
+        expect(finalPort.dockedPoints).toInclude(pointID)
+    })
 })
