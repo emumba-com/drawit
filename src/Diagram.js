@@ -100,12 +100,14 @@ export default class Diagram extends React.Component<Props> {
 
         return (
             <div className="Drawit--Diagram">
-                <DragContext>
+                <DragContext logger={this.logger}>
                     <LayerNodes
+                        logger={this.logger}
                         conf={this.conf}
                         value={value}
                         onChangeEntityModel={ this.handleChangeEntityModel }/>
                     <LayerLinks
+                        logger={this.logger}
                         conf={this.conf}
                         value={value}
                         valueBuilder={this.valueBuilder}

@@ -20,6 +20,7 @@ export default ( logLevel: LogLevel ): Logger => {
     const e = ordinals['error']   > n
 
     const logger: Logger = {
+        logLevel,
         verbose: (...args) => {
             if ( v ) {
                 console.log('[drawit][verbose] ', ...args)

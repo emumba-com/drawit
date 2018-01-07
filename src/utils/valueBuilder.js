@@ -11,7 +11,8 @@ import type {
     PointModel,
     LinkSpecification,
     DiagramModel,
-    Configuration
+    Configuration,
+    Logger
 } from '../types'
 
 const applyDefaultsToNodeModelSpec = (spec: NodeSpecification, conf: Configuration): NodeSpecification => {
@@ -151,7 +152,18 @@ const buildLinkModel = (spec: LinkSpecification): { model: LinkModel, points: Po
     }
 }
 
-export default ({ value, onChange, conf }: Object) => (initialValue: Object) => {
+export default ({
+        value,
+        onChange,
+        conf,
+        logger
+    }: {
+        value: DiagramModel,
+        onChange: (DiagramModel) => void,
+        conf: Configuration,
+        logger: Logger
+    }) => (initialValue: Object) => {
+
     const builder = {}
     const contextObjects = []
     let nextValue = initialValue || value || {}
