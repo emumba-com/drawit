@@ -96,7 +96,7 @@ export default (pOptions = {}) => WrappedElement => {
         }
         handleDockTargetDragStart = e => {
             const { model: dragSource } = e
-            
+
             this.setState({
                 isDragging: true,
                 isSnapped: false,
@@ -133,7 +133,7 @@ export default (pOptions = {}) => WrappedElement => {
         }
         handleDockTargetDragEnd = e => {
             const { isSnapped } = e
-            
+
             this.setState({
                 isDragging: false,
                 isSnapped,
@@ -151,15 +151,15 @@ export default (pOptions = {}) => WrappedElement => {
         }
         render() {
             const { x, y } = this.state
-            const { model, onMouseDown } = this.props
-
-            return (
-                <DraggableElement onMouseDown={onMouseDown} className="Drawit--Movable" {...toPositionAttributes(x, y)}>
-                    <WrappedElement {...this.props} {...this.state}/>
-                    <Observer event="drag-start" id={model.id} handler={this.handleDragStart}/>
-                    <Observer event="drag" id={model.id} handler={this.handleDrag}/>
-                    <Observer event="drag-end" id={model.id} handler={this.handleDragEnd}/>
-                    {
+            const { model, onMouseDown, value } = this.props
+            if (value.enableDragging || model.enableDragging) {
+              return (
+                  <DraggableElement onMouseDown={onMouseDown} className="Drawit--Movable" {...toPositionAttributes(x, y)}>
+                      <WrappedElement {...this.props} {...this.state}/>
+                      <Observer event="drag-start" id={model.id} handler={this.handleDragStart}/>
+                      <Observer event="drag" id={model.id} handler={this.handleDrag}/>
+                      <Observer event="drag-end" id={model.id} handler={this.handleDragEnd}/>
+                      {
                         getDockTargets(this.props).map(id => (
                             <span>
                                 <Observer event="drag-start" id={id} handler={this.handleDockTargetDragStart}/>
@@ -167,8 +167,14 @@ export default (pOptions = {}) => WrappedElement => {
                                 <Observer event="drag-end" id={id} handler={this.handleDockTargetDragEnd}/>
                             </span>
                         ))
-                    }
-                </DraggableElement>
+                      }
+                  </DraggableElement>
+              )
+            }
+            return (
+              <DraggableElement className="Drawit--Movable" {...toPositionAttributes(x, y)}>
+                  <WrappedElement {...this.props} {...this.state}/>
+              </DraggableElement>
             )
         }
     }
