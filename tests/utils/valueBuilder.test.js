@@ -62,4 +62,36 @@ describe('utils/valueBuilder', () => {
         expect(x).toBe(0)
         expect(y).toBe(0)
     })
+
+    it('undocks a point correctly', () => {
+        let nextValue = value
+        const pointID = '61c3c50b-f2ee-45a4-8d91-74e7941ff5a7'
+        
+        // verify we have a dock target
+        const { dockTarget: initialDockTarget } = nextValue.points[pointID]
+        expect(initialDockTarget).toExist()
+        
+        // verify this port has current point present in its `dockedPoints`
+        const port = nextValue.ports[initialDockTarget]
+        expect(port.dockedPoints).toInclude(pointID)
+
+        // update values with builder
+        createValueBuilder({
+            value,
+            onChange: _nextValue_ => {
+                nextValue = _nextValue_
+            },
+            conf 
+        })()
+        .undock(pointID)
+        .apply()
+
+        // verify dockTarget is undefined
+        const { dockTarget } = nextValue.points[pointID]
+        expect(dockTarget).toNotExist()
+
+        // verify if node is also updated
+        const nextPort = nextValue.ports[initialDockTarget]
+        expect(nextPort.dockedPoints).toNotInclude(pointID)
+    })
 })
