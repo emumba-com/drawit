@@ -1,27 +1,36 @@
 /* @flow */
 
-import React from 'react'
+import * as React from 'react'
 
 import { DefaultNode, DefaultLink } from './defaults'
 import { buildConf, Node, Link } from './conf'
 import { LayerNodes, LayerLinks } from './layers'
-import { makeUID, toCache, DragContext, createValueBuilder } from './utils'
+import { makeUID, toCache, DragContext, createValueBuilder, createLogger } from './utils'
 import type {
-    DiagramProps,
     Configuration,
     NodeSpecification,
     LinkSpecification,
     NodeModel,
     LinkModel,
     PortModel,
-    PointModel
+    PointModel,
+    LogLevel,
+    Logger
 } from './types'
 
-export default class Diagram extends React.Component<DiagramProps> {
+type Props = {
+    value: any,
+    logLevel: LogLevel,
+    onChange: Function,
+    children?: React.Node
+}
+
+export default class Diagram extends React.Component<Props> {
+    logger: Logger;
     conf: Configuration;
     valueBuilder: any;
     
-    constructor( props:DiagramProps ) {
+    constructor( props:Props ) {
         super(props)
 
         this.updateConf(props)
@@ -62,15 +71,22 @@ export default class Diagram extends React.Component<DiagramProps> {
     handleChangePointModel = (model: PointModel) => this.handleChangeEntityModel('points', model)
     handleChangePortModel = (model: PortModel) => this.handleChangeEntityModel('ports', model)
 
-    componentWillReceiveProps( nextProps: DiagramProps ) {
+    componentWillReceiveProps( nextProps: Props ) {
         // console.log(`[Diagram/componentWillReceiveProps] invoked ...`)
         this.updateConf( nextProps )
     }
 
-    updateConf( props: DiagramProps ) {
-        const { onChange, value } = props
+    updateConf( props: Props ) {
+        const { onChange, value, logLevel = 'silent' } = props
+
+        this.logger = createLogger( logLevel )
         this.conf = buildConf(props)
-        this.valueBuilder = createValueBuilder({ value, onChange, conf: this.conf })
+        this.valueBuilder = createValueBuilder({
+            value,
+            onChange,
+            conf: this.conf,
+            logger: this.logger
+        })
 
         // console.log(`[updateConf] conf: `, this.conf)
     }

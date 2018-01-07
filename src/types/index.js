@@ -2,12 +2,6 @@
 
 import * as React from 'react'
 
-export type DiagramProps = {
-    value: any,
-    onChange: Function,
-    children?: React.Node
-}
-
 // --- Models --- //
 
 export type DiagramModel = {
@@ -132,4 +126,18 @@ export type Configuration = {
     links: {
         [string]: LinkConfiguration
     }
+}
+
+/* -- Logging -- */
+
+export type LogLevel = 'verbose' | 'debug' | 'info' | 'warn' | 'error'
+
+export type Log = (Array<*>) => void
+
+export type Logger = {
+    verbose: Log,
+    debug: Log,
+    info: Log,
+    warn: Log,
+    error: Log,
 }
