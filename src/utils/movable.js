@@ -1,16 +1,42 @@
-import React from 'react'
-import Observer from './Observer'
+/* @flow */
 
+import * as React from 'react'
+
+import Observer from './Observer'
 import DraggableElementHTML from './DraggableElementHTML'
 
-export default (pOptions = {}) => WrappedElement => {
+type HOCOptions = {
+    DraggableElement?: React.Node,
+    toPositionAttributes?: Function,
+    getDockTargets?: (Props) => Array<Object>,
+    onDragStart?: ({x: number, y: number}, Props) => void,
+    onDrag?: ({x: number, y: number, isSnapped: boolean}, Props) => void,
+    onDragEnd?: ({x: number, y: number, isSnapped: boolean}, Props) => void
+}
+
+type Props = {
+    model: Object,
+    onMouseDown: Function
+}
+
+type State = {
+    x: number,
+    y: number,
+    initX: number,
+    initY: number,
+    isDragging: boolean,
+    isSnapped: boolean,
+    dragSource: null | Object, // model
+}
+
+export default (pOptions: HOCOptions = {}) => (WrappedElement: Class<React$Component<*>>) => {
     const options = {
         draggableElement: DraggableElementHTML,
         toPositionAttributes: (left, top) => ({style: {left, top}}),
-        getDockTargets: () => [],
-        onDragStart: () => {},
-        onDrag: () => {},
-        onDragEnd: () => {},
+        getDockTargets: ({}) => [],
+        onDragStart: ({}, {}) => {},
+        onDrag: ({}, {}) => {},
+        onDragEnd: ({}, {}) => {},
         ...pOptions
     }
 
@@ -23,8 +49,8 @@ export default (pOptions = {}) => WrappedElement => {
         getDockTargets
     } = options
 
-    return class Movable extends React.Component {
-        constructor(props) {
+    return class Movable extends React.Component<Props, State> {
+        constructor(props: Props) {
             super(props)
             const { model } = props
             const { x = 0, y = 0 } = model
@@ -39,7 +65,24 @@ export default (pOptions = {}) => WrappedElement => {
                 dragSource: null
             }
         }
-        handleDragStart = e => {
+        componentWillReceiveProps( nextProps: Props ) {
+            const { x: oldX, y: oldY, isDragging } = this.state
+            const { id, parentID } = nextProps.model
+
+            if ( !isDragging ) {
+                const { x= oldX, y= oldY } = nextProps.model
+
+                if ( parentID ) {
+                    // console.log(`[movable/componentWillReceiveProps] ${id}: x[${x}], y[${y}]`)
+                    // console.log(nextProps)
+                }
+
+                this.setState({
+                    x, y
+                })
+            }
+        }
+        handleDragStart = (e: Object) => {
             const { model: dragSource } = e
 
             this.setState({
@@ -59,7 +102,7 @@ export default (pOptions = {}) => WrappedElement => {
                 x, y
             }, this.props)
         }
-        handleDrag = e => {
+        handleDrag = (e: Object) => {
             const { dx, dy, isSnapped } = e
             const { initX, initY } = this.state
             const x = dx + initX
@@ -76,7 +119,7 @@ export default (pOptions = {}) => WrappedElement => {
                 x, y, isSnapped
             }, this.props)
         }
-        handleDragEnd = e => {
+        handleDragEnd = (e: Object) => {
             const { isSnapped } = e
 
             this.setState({
@@ -94,7 +137,7 @@ export default (pOptions = {}) => WrappedElement => {
                 ...e
             }, this.props)
         }
-        handleDockTargetDragStart = e => {
+        handleDockTargetDragStart = (e: Object) => {
             const { model: dragSource } = e
             
             this.setState({
@@ -114,7 +157,7 @@ export default (pOptions = {}) => WrappedElement => {
                 x, y
             }, this.props)
         }
-        handleDockTargetDrag = e => {
+        handleDockTargetDrag = (e: Object) => {
             const { dx, dy, isSnapped } = e
             const { initX, initY } = this.state
             const x = dx + initX
@@ -131,7 +174,7 @@ export default (pOptions = {}) => WrappedElement => {
                 x, y, isSnapped
             }, this.props)
         }
-        handleDockTargetDragEnd = e => {
+        handleDockTargetDragEnd = (e: Object) => {
             const { isSnapped } = e
             
             this.setState({

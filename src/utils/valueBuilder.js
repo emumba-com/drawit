@@ -187,6 +187,33 @@ export default ({ value, onChange, conf }: Object) => (initialValue: Object) => 
         return builder
     }
 
+    const updateNode = ( id: string, spec: NodeSpecification ) => {
+        const model = nextValue.nodes[id]
+
+        if ( !model ) {
+            throw `Node with ID[${id}] was not found`
+        }
+
+        const { x = model.x, y = model.y } = spec
+        const safeSpec = { x, y }
+        const nextModel = {
+            ...model,
+            ...safeSpec
+        }
+
+        nextValue = {
+            ...nextValue,
+            nodes: {
+                ...nextValue.nodes,
+                [id]: nextModel
+            }
+        }
+        
+        // console.log(`[updateNode] nextModel: `, nextModel, ', nextValue: ', nextValue)
+
+        return builder
+    }
+
     const addLink = ( spec: LinkSpecification = {} ) => {
         const modelSpec = applyDefaultsToLinkModelSpec(spec, conf)
         const { model, points } = buildLinkModel( modelSpec )
@@ -210,12 +237,54 @@ export default ({ value, onChange, conf }: Object) => (initialValue: Object) => 
         return builder
     }
 
-    const dock = ( _pointID_: string, _portID_: string ) => {
+    const updatePoint = ( id: string, spec: PointSpecification ) => {
+        const model = nextValue.points[id]
+
+        if ( !model ) {
+            throw `Point with ID[${id}] was not found`
+        }
+
+        const { x = model.x, y = model.y } = spec
+        const safeSpec = { x, y }
+        const nextModel = {
+            ...model, ...safeSpec
+        }
+
+        nextValue = {
+            ...nextValue,
+            points: {
+                ...nextValue.points,
+                [id]: nextModel
+            }
+        }
+
+        // console.log(`[updatePoint] nextModel: `, nextModel, ', nextValue: ', nextValue)
+
+        return builder
+    }
+
+    const dock = ( _pointID_: string | Function, _portID_: string | Function ) => {
         const pointID = evaluate(_pointID_)
         const portID = evaluate(_portID_)
 
         const port = nextValue.ports[portID]
         const point = nextValue.points[pointID]
+
+        if ( !port ) {
+            throw `Port with ID[${portID}] not found`
+        }
+
+        if ( !point ) {
+            throw `Point with ID[${pointID}] not found`
+        }
+
+        if ( point.dockTarget === portID && (new Set(port.dockedPoints)).has(pointID) ) {
+            throw `Point[${pointID}] is already docked at port[${portID}]`
+        }
+
+        if ( point.dockTarget ) {
+            throw `Point[${pointID}] is already docked with port[${point.dockTarget}]. Undock it first before docking it again.`
+        }
 
         // console.log(`[dockPointToPort] point: `, pointID, ', port: ', portID)
         const dockedPoints = port.dockedPoints || []
@@ -292,14 +361,14 @@ export default ({ value, onChange, conf }: Object) => (initialValue: Object) => 
     }
 
     const apply = () => {
-        // console.log(`apply called`)
+        // console.log(`apply called with value: `, nextValue)
         onChange( nextValue )
 
         return builder
     }
 
     Object.assign(builder, {
-        addNode, addLink, dock, undock, replace, apply
+        addNode, addLink, updateNode, updatePoint, dock, undock, replace, apply
     })
 
     return builder
