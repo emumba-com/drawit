@@ -26,7 +26,7 @@ export default class LayerLinks extends React.Component {
         const { offsetX, offsetY } = this.state
         const { value, conf, onChangeEntityModel, onChangePortModel, valueBuilder, logger } = this.props
         const { links } = value
-
+        const { enableDragging } = conf
         return (
             <div className="Drawit--Diagram--Links">
                 <svg>
@@ -46,6 +46,7 @@ export default class LayerLinks extends React.Component {
                                 offsetY={offsetY}
                                 valueBuilder={valueBuilder}
                                 onChangeEntityModel={onChangeEntityModel}
+                                enableDragging={enableDragging}
                             />
                         )
                     })

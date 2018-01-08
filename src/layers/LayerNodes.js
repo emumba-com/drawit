@@ -26,7 +26,7 @@ export default class LayerNodes extends React.Component {
         const { offsetX, offsetY } = this.state
         const { conf, value, onChangeEntityModel } = this.props
         const { nodes } = value
-
+        const { enableDragging } = conf
         return (
             <div className="Drawit--Diagram--Nodes">
             {
@@ -40,6 +40,7 @@ export default class LayerNodes extends React.Component {
                             model={model}
                             value={value}
                             conf={conf.nodes[type]}
+                            enableDragging={enableDragging}
                             offsetX={offsetX}
                             offsetY={offsetY}
                             onChangeEntityModel={onChangeEntityModel}
