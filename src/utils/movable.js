@@ -37,7 +37,7 @@ export default (pOptions: HOCOptions = {}) => (WrappedElement: Class<React$Compo
         onDragStart: ({}, {}) => {},
         onDrag: ({}, {}) => {},
         onDragEnd: ({}, {}) => {},
-        ...pOptions
+        ...pOptions,
     }
 
     const {
@@ -66,6 +66,7 @@ export default (pOptions: HOCOptions = {}) => (WrappedElement: Class<React$Compo
             }
         }
         componentWillReceiveProps( nextProps: Props ) {
+
             const { x: oldX, y: oldY, isDragging } = this.state
             const { id, parentID } = nextProps.model
 
@@ -194,31 +195,24 @@ export default (pOptions: HOCOptions = {}) => (WrappedElement: Class<React$Compo
         }
         render() {
             const { x, y } = this.state
-            const { model, onMouseDown, value } = this.props
-            if (value.enableDragging || model.enableDragging) {
-              return (
-                  <DraggableElement onMouseDown={onMouseDown} className="Drawit--Movable" {...toPositionAttributes(x, y)}>
-                      <WrappedElement {...this.props} {...this.state}/>
-                      <Observer event="drag-start" id={model.id} handler={this.handleDragStart}/>
-                      <Observer event="drag" id={model.id} handler={this.handleDrag}/>
-                      <Observer event="drag-end" id={model.id} handler={this.handleDragEnd}/>
-                      {
-                        getDockTargets(this.props).map(id => (
-                            <span>
-                                <Observer event="drag-start" id={id} handler={this.handleDockTargetDragStart}/>
-                                <Observer event="drag" id={id} handler={this.handleDockTargetDrag}/>
-                                <Observer event="drag-end" id={id} handler={this.handleDockTargetDragEnd}/>
-                            </span>
-                        ))
-                      }
-                  </DraggableElement>
-              )
-            }
+            const { model, onMouseDown } = this.props
             return (
-              <DraggableElement className="Drawit--Movable" {...toPositionAttributes(x, y)}>
-                  <WrappedElement {...this.props} {...this.state}/>
-              </DraggableElement>
-            )
+                <DraggableElement onMouseDown={onMouseDown} className="Drawit--Movable" {...toPositionAttributes(x, y)}>
+                    <WrappedElement {...this.props} {...this.state}/>
+                    <Observer event="drag-start" id={model.id} handler={this.handleDragStart}/>
+                    <Observer event="drag" id={model.id} handler={this.handleDrag}/>
+                    <Observer event="drag-end" id={model.id} handler={this.handleDragEnd}/>
+                    {
+                      getDockTargets(this.props).map(id => (
+                          <span>
+                              <Observer event="drag-start" id={id} handler={this.handleDockTargetDragStart}/>
+                              <Observer event="drag" id={id} handler={this.handleDockTargetDrag}/>
+                              <Observer event="drag-end" id={id} handler={this.handleDockTargetDragEnd}/>
+                          </span>
+                      ))
+                    }
+                </DraggableElement>
+              )
         }
     }
 }

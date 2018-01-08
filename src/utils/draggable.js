@@ -5,13 +5,14 @@ import PropTypes from 'prop-types'
 // src
 import DraggableElementHTML from './DraggableElementHTML'
 import eventSource from './eventSource'
-import { getSnapTargetInRange, getCenterPoint } from './utils'
+import { getSnapTargetInRange, getCenterPoint, evaluteHOCParam } from './utils'
 
 export default (options = {}) => WrappedElement => {
     const {
         toPositionAttributes = (left, top) => ({style: {left, top}}),
         draggableElement: DraggableElement = DraggableElementHTML,
-        snapTargets: snapTargetTypes = []
+        snapTargets: snapTargetTypes = [],
+        enable: __enable__ = false
     } = options
 
     return @eventSource() class Draggable extends React.Component {
@@ -158,11 +159,13 @@ export default (options = {}) => WrappedElement => {
         }
 
         render() {
-          console.log(this.props)
             const { value, model } = this.props
-            if (value.enableDragging || model.enableDragging) {
+            const enable = evaluteHOCParam(__enable__, this.props)
+
+            if ( enable ) {
               return <WrappedElement onMouseDown={this.handleMouseDown}  {...this.props}/>
             }
+
             return <WrappedElement  {...this.props}/>
         }
     }
