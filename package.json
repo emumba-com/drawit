@@ -1,6 +1,6 @@
 {
   "name": "drawit",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A React library to easily create diagrams",
   "main": "lib/index.js",
   "module": "es/index.js",
