@@ -18,7 +18,6 @@ import type
     PointConfiguration,
     PortConfiguration,
     PositionConfiguration,
-    DiagramProps
 } from '../types'
 
 const buildPortConf = (element: React$Element<*>): PortConfiguration => {
@@ -100,7 +99,7 @@ const buildLinkConf = (element: React$Element<*>): LinkConfiguration => {
     }
 }
 
-export default (props: DiagramProps): Configuration => {
+export default (props): Configuration => {
     // const props: DiagramProps = element.props
     const { children, enableDragging } = props
     return React.Children.toArray(children).reduce((output, child) => {

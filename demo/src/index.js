@@ -58,7 +58,7 @@ class Demo extends Component {
   handleClickAddLink = e => {
     this.refs.diagram.addLink()
   }
-  handleClickDragging = e => {
+  handleClickToggleDragging = e => {
     const { enableDragging } = this.state
     this.setState({
       enableDragging: !enableDragging
@@ -84,7 +84,7 @@ class Demo extends Component {
         <button onClick={this.handleClickAddCircle}>Add Circle</button>
         <button onClick={this.handleClickAddDiamond}>Add Diamond</button>
         <button onClick={this.handleClickAddLink}>Add Link</button>
-        <button onClick={this.handleClickDragging}>Toggle Dragging</button>
+        <button onClick={this.handleClickToggleDragging}>Toggle Dragging</button>
         <button onClick={this.handleClickClear}>Clear</button>
         <Diagram ref="diagram" value={value} onChange={this.handleChange} enableDragging={enableDragging}>
           <Node type="default" component={ DefaultNode }>
