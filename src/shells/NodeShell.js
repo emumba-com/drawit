@@ -8,12 +8,13 @@ import PortShell from './PortShell'
 @entityComponent({
     entityType: 'node'
 })
-@draggable()
+@draggable({
+    enable: props => props.enableDragging
+})
 @movable({
     onDragEnd: (event, props) => {
         const { x, y } = event
         const { onChangeEntityModel, model, onDragEnd } = props
-
         onChangeEntityModel('nodes', {
             ...model,
             x, y
@@ -39,7 +40,6 @@ export default class NodeShell extends React.Component {
         const { positions, component: NodeComponent } = conf
         // const { component: NodeComponent, children } = node.props
         // const ports = children ? React.Children.toArray(children).filter(child => child.type === Port) : []
-
         return (
             <div className="Drawit--NodeShell">
                 <NodeComponent value={value} model={model} isDragging={isDragging}/>
@@ -49,7 +49,6 @@ export default class NodeShell extends React.Component {
                         const portType = value.ports[model.ports[key]].type
                         const port = position.ports[portType]
                         const portModel = value.ports[model.ports[key]]
-                        // console.log('position: ', position, 'portType: ', portType, 'port: ', port)
 
                         return <PortShell key={key} conf={port} model={portModel}/>
                     })

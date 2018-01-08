@@ -24,7 +24,7 @@ export const getSnapTargetInRange = (point, snapTargets) =>
 
         const node = ReactDOM.findDOMNode(mountedElement)
         const rect = node.getBoundingClientRect()
-        
+
         const width = rect.width * strength
         const height = rect.height * strength
         const x = rect.x - ( width - rect.width ) / 2
@@ -36,18 +36,24 @@ export const getSnapTargetInRange = (point, snapTargets) =>
 export const getCenterPoint = ({ mountedElement }) => {
         const node = ReactDOM.findDOMNode(mountedElement)
         const rect = node.getBoundingClientRect()
-        
+
         return {
             x: rect.x + rect.width / 2,
             y: rect.y + rect.height / 2
         }
     }
+export const evaluteHOCParam = (param, props) => {
+        if ( typeof param === 'function' ) {
+            return param(props)
+        }
+        return param
+    }
 
 /**
- * 
- * @param {string} key 
- * @param {Object} thisProps 
- * @param {Object} nextProps 
+ *
+ * @param {string} key
+ * @param {Object} thisProps
+ * @param {Object} nextProps
  */
 export const hasPropChanged = (
     key,

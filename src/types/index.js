@@ -63,7 +63,7 @@ export type NodeSpecification = {
 
 export type LinkSpecification = {
     type?: string,
-    
+
     // Funny, if you change prop name to something else, there's no error.
     // Flow doesn't like the name "points"
     // $FlowFixMe
@@ -125,7 +125,8 @@ export type Configuration = {
     },
     links: {
         [string]: LinkConfiguration
-    }
+    },
+    enableDragging: boolean
 }
 
 /* -- Logging -- */

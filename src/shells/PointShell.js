@@ -8,7 +8,8 @@ import { DefaultPoint } from '../defaults'
     entityType: 'point'
 })
 @draggable({
-    snapTargets: ['port']
+    snapTargets: ['port'],
+    enable: props => props.enableDragging
 })
 @movable({
     draggableElement: DraggableElementSVG,
@@ -32,7 +33,7 @@ import { DefaultPoint } from '../defaults'
     onDragStart: (event, props) => {
         const { onDragStart } = props
         const { x, y } = event
-        
+
         onDragStart && onDragStart({ x, y })
     },
     onDrag: (event, props) => {
@@ -51,7 +52,7 @@ import { DefaultPoint } from '../defaults'
             nextPointModel.dockTarget = snapTargetModel.id
 
             const nextPortModel = {...snapTargetModel}
-            
+
             if ( !nextPortModel.dockedPoints ) {
                 nextPortModel.dockedPoints = []
             }

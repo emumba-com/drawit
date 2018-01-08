@@ -27,15 +27,15 @@ class Demo extends Component {
     super(props)
 
     this.state = {
-      value: JSON.parse(localStorage.getItem(LS_KEY) || '{}')
+      value: JSON.parse(localStorage.getItem(LS_KEY)) || {},
+      enableDragging: true
     }
-
     window.demo = this
   }
   handleChange = (value, e) => {
     // console.log('[demo/index] Updating value: ', value)
 
-    this.setState({ value })
+    this.setState({value})
     localStorage.setItem(LS_KEY, JSON.stringify(value))
   }
   handleClickAddNode = e => {
@@ -58,6 +58,13 @@ class Demo extends Component {
   handleClickAddLink = e => {
     this.refs.diagram.addLink()
   }
+  handleClickToggleDragging = e => {
+    const { enableDragging } = this.state
+    this.setState({
+      enableDragging: !enableDragging
+    })
+  }
+
   handleClickClear = e => {
     if ( !confirm('Sure?') ) {
       return
@@ -69,8 +76,7 @@ class Demo extends Component {
     })
   }
   render() {
-    const { value } = this.state
-
+    const { value, enableDragging } = this.state
     return (
       <div>
         <h1>Drawit Demo</h1>
@@ -78,8 +84,9 @@ class Demo extends Component {
         <button onClick={this.handleClickAddCircle}>Add Circle</button>
         <button onClick={this.handleClickAddDiamond}>Add Diamond</button>
         <button onClick={this.handleClickAddLink}>Add Link</button>
+        <button onClick={this.handleClickToggleDragging}>Toggle Dragging</button>
         <button onClick={this.handleClickClear}>Clear</button>
-        <Diagram ref="diagram" value={value} onChange={this.handleChange}>
+        <Diagram ref="diagram" value={value} onChange={this.handleChange} enableDragging={enableDragging}>
           <Node type="default" component={ DefaultNode }>
             <Position type="left" top="calc(50% - 0.2rem)" left="-0.2rem">
               <Port type="default" component={ DefaultPort }/>
@@ -90,7 +97,7 @@ class Demo extends Component {
           </Node>
           <Node type="circle" component={ NodeCircle }>
             <Position type="left" top="calc(50% - 0.2rem)" left="-0.2rem">
-              <Port type="default" component={ DefaultPort }/>  
+              <Port type="default" component={ DefaultPort }/>
             </Position>
             <Position type="right" top="calc(50% - 0.2rem)" right="-0.2rem">
               <Port type="default" component={ DefaultPort }/>
