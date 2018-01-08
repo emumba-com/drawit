@@ -17,7 +17,7 @@ Describe drawit here.
 
 # Features
 - No Dependencies
-- Tiny Size
+- Tiny Size (~40KB)
 - Interactive
 - Responsive
 - Support for Touch Devices

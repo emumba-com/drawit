@@ -1,49 +1,38 @@
-import React from 'react'
+/* @flow */
+
+// libs
+import * as React from 'react'
+
+// src
 import Node from './Node'
 import Link from './Link'
 import Port from './Port'
 import Point from './Point'
 import Position from './Position'
 import { DefaultNode, DefaultLink, DefaultPort, DefaultPoint } from '../defaults'
+import type
+ {
+    Configuration,
+    LinkConfiguration,
+    NodeConfiguration,
+    PointConfiguration,
+    PortConfiguration,
+    PositionConfiguration,
+    DiagramProps
+} from '../types'
 
-/**
- * Conf
- * {
- *     nodes: {
- *         'default': {
- *              component: React$Element,
- *              ports: {
- *                  'default': {
- *                      positions: {
- *                          left: {
- *                              top: 'calc(50% - 0.2rem)',
- *                              left: '-0.2rem'
- *                          },
- *                          right: {
- *                              top: 'calc(50% - 0.2rem)',
- *                              right: '-0.2rem'
- *                          }
- *                      }
- *                  }
- *              }
- *         }
- *     },
- *     links: {
- *         'default': {
- *             
- *         }
- *     }
- * }
- */
+const buildPortConf = (element: React$Element<*>): PortConfiguration => {
+    const { props: { type = 'default', component = DefaultPort, children = [] } } = element
 
-const buildPortConf = ({ props: { type = 'default', component = DefaultPort, children = [] } }) =>
-    ({
+    return {
         type,
         component
-    })
+    }
+}
+const buildPositionConf = (element: React$Element<*>): PositionConfiguration => {
+    const { props: { type = 'default', top = '', left = '', bottom = '', right = '', children = [] } } = element
 
-const buildPositionConf = ({ props: { type = 'default', top = '', left = '', bottom = '', right = '', children = [] } }) => 
-    ({
+    return {
         type,
         top,
         left,
@@ -63,10 +52,13 @@ const buildPositionConf = ({ props: { type = 'default', top = '', left = '', bot
 
             return output
         }, {})
-    })
+    }
+}
 
-const buildNodeConf = ({ props: { type = 'default', component = DefaultNode, children = [] } }) =>
-    ({
+const buildNodeConf = (element: React$Element<*>): NodeConfiguration => {
+    const { props: { type = 'default', component = DefaultNode, children = [] } } = element
+
+    return {
         type,
         component,
         positions: React.Children.toArray(children).reduce((output, child) => {
@@ -79,16 +71,20 @@ const buildNodeConf = ({ props: { type = 'default', component = DefaultNode, chi
             output[positionConf.type] = positionConf
             return output
         }, {})
-    })
+    }
+}
+const buildPointConf = (element: React$Element<*>): PointConfiguration => {
+    const { props: { type = 'default', component = DefaultPoint, children = [] } } = element
 
-const buildPointConf = ({ props: { type = 'default', component = DefaultPoint, children = [] } }) =>
-    ({
+    return {
         type,
         component
-    })
+    }
+}
+const buildLinkConf = (element: React$Element<*>): LinkConfiguration => {
+    const { props: { type = 'default', component = DefaultLink, children = [] } } = element
 
-const buildLinkConf = ({ props: { type = 'default', component = DefaultLink, children = [] } }) =>
-    ({
+    return {
         type,
         component,
         points: React.Children.toArray(children).reduce((output, child) => {
@@ -101,10 +97,14 @@ const buildLinkConf = ({ props: { type = 'default', component = DefaultLink, chi
             output[pointConf.type] = pointConf
             return output
         }, {})
-    })
+    }
+}
 
-export default ({ props: {children} }) =>
-    children.reduce((output, child) => {
+export default (props: DiagramProps): Configuration => {
+    // const props: DiagramProps = element.props
+    const { children } = props
+    
+    return React.Children.toArray(children).reduce((output, child) => {
         if ( child.type === Node ) {
             const nodeConf = buildNodeConf(child)
             output.nodes[nodeConf.type] = nodeConf
@@ -120,3 +120,4 @@ export default ({ props: {children} }) =>
         nodes: {},
         links: {}
     })
+}

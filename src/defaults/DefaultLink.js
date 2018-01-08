@@ -23,14 +23,11 @@ export default class DefaultLink extends React.Component {
         const { model, isDraggingPoint = false, draggedPoint, draggedPointIndex } = this.props
         const { points = [{x: 0, y: 0}, {x: 100, y: 100}] } = model
 
-        const shadowPoints = isDraggingPoint && toShadowPoints(points, draggedPoint, draggedPointIndex)
+        const drawablePoints = isDraggingPoint ? toShadowPoints(points, draggedPoint, draggedPointIndex) : points
 
         return (
             <g>
-                <path stroke="#666" d={toDString(points)}/>
-                {
-                    isDraggingPoint && <path stroke="#ccc" d={toDString(shadowPoints)}/>
-                }
+                <path stroke="#666" d={toDString(drawablePoints)}/>
             </g>
         )
     }

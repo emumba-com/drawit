@@ -42,3 +42,15 @@ export const getCenterPoint = ({ mountedElement }) => {
             y: rect.y + rect.height / 2
         }
     }
+
+/**
+ * 
+ * @param {string} key 
+ * @param {Object} thisProps 
+ * @param {Object} nextProps 
+ */
+export const hasPropChanged = (
+    key,
+    thisProps,
+    nextProps
+  ) => thisProps[key] !== nextProps[key]

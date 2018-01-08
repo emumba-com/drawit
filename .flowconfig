@@ -1,0 +1,15 @@
+[ignore]
+.*/node_modules/.*
+.*/es/.*
+.*/lib/.*
+.*/umd/.*
+
+[include]
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]

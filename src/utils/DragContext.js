@@ -57,12 +57,22 @@ export default class DragContext extends React.Component {
         ensureListenerStructure(event, id)
 
         listeners[event][id].push(listener)
+
+        const { logger } = this.props
+        if ( logger.logLevel === 'verbose' ) {
+            logger.verbose(`[DragContext/addEventListener] Event[${event}] for entity[${id}] has ${listeners[event][id].length} listeners`)
+        }
     }
 
     removeEventListener = (event = 'default', id = 'default', listener) => {
         ensureListenerStructure(event, id)
 
         listeners[event][id].splice(listeners[event][id].indexOf(listener), 1)
+
+        const { logger } = this.props
+        if ( logger.logLevel === 'verbose' ) {
+            logger.verbose(`[DragContext/removeEventListener] Event[${event}] for entity[${id}] has ${listeners[event][id].length} listeners`)
+        }
     }
 
     getChildContext() {

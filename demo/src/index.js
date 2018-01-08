@@ -32,7 +32,7 @@ class Demo extends Component {
     window.demo = this
   }
   handleChange = (value, e) => {
-    console.log('[demo/index] Updating value: ', value)
+    // console.log('[demo/index] Updating value: ', value)
 
     this.setState({ value })
     localStorage.setItem(LS_KEY, JSON.stringify(value))

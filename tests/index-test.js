@@ -5,6 +5,7 @@ import {render, unmountComponentAtNode} from 'react-dom'
 import Component from 'src/'
 
 describe('Component', () => {
+  /*
   let node
 
   beforeEach(() => {
@@ -20,4 +21,5 @@ describe('Component', () => {
       expect(node.innerHTML).toContain('Welcome to React components')
     })
   })
+  */
 })
