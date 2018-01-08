@@ -34,3 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Initial project setup
 - Initial component structure
+
+[Unreleased]: https://github.com/emumba-com/drawit/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/emumba-com/drawit/compare/v1.0.2...v1.1.0
+[1.0.2]: https://github.com/emumba-com/drawit/tree/v1.0.2
