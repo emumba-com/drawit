@@ -42,7 +42,7 @@ export default class NodeShell extends React.Component {
 
         return (
             <div className="Drawit--NodeShell">
-                <NodeComponent model={model} isDragging={isDragging}/>
+                <NodeComponent value={value} model={model} isDragging={isDragging}/>
                 {
                     Object.keys(positions).map(key => {
                         const position = positions[key]
