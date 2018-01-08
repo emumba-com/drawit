@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - flowtype
 - Unit tests to verify some functions of valueBuilder
 - Ability to specify a logLevel in the Diagram
+- Ability to toggle draggability in Diagram
+
+### Changed
+- Draggability is disabled by default
 
 ### Fixed
 - Points don't change position when model coordinates are updated
