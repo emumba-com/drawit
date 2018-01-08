@@ -1,0 +1,36 @@
+# Changelog
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+### Added
+- valueBuilder
+- flowtype
+- Unit tests to verify some functions of valueBuilder
+- Ability to specify a logLevel in the Diagram
+
+### Fixed
+- Points don't change position when model coordinates are updated
+
+## [1.1.0] - 2017-11-09
+### Added
+- A layer for rendering nodes
+- Ability to drag nodes around
+- Ability to specify different types of nodes
+- Ability to specify ports on a node
+- A layer for rendering links
+- Ability to specify points on a link
+- Ability to drag points around
+- A separate module to generate diagram configuration object
+- Added snappability while dragging
+- Added dockability
+
+### Changed
+- Externalized diagram state
+
+## [1.0.2] - 2017-10-24
+### Added
+- Initial project setup
+- Initial component structure
