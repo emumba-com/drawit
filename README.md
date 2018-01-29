@@ -16,6 +16,14 @@ Describe drawit here.
 [coveralls]: https://coveralls.io/github/user/repo
 
 # Features
+## Basic Usasge
+- Create Objects and Links
+- Supports Custom User provided views for both objects and links
+- Create Tree or Graph Structures
+- Supports Dragging and Static Positioning
+
+## Why Drawit?
+- Based on React 16 so plays very well in the React Ecosystem
 - No Dependencies
 - Tiny Size (~40KB)
 - Interactive
