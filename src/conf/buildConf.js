@@ -99,7 +99,7 @@ const buildLinkConf = (element: React$Element<*>): LinkConfiguration => {
     }
 }
 
-export default (props): Configuration => {
+export default (props: Object): Configuration => {
     // const props: DiagramProps = element.props
     const { children, enableDragging } = props
     return React.Children.toArray(children).reduce((output, child) => {
