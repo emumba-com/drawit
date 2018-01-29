@@ -15,15 +15,15 @@ Describe drawit here.
 [coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
 [coveralls]: https://coveralls.io/github/user/repo
 
-# Features
-## Basic Usasge
-- Create Objects and Links
-- Supports Custom User provided views for both objects and links
-- Create Tree or Graph Structures
-- Supports Dragging and Static Positioning
+# Basic Usage
+- Create diagrams with Objects and Links
+- Supports custom views for both objects and links
+- Supports dragging and static positioning
+- Create any Diagram, Chart or Visualization which can break in to Objects and links
+- Example usecases include Flow Charts, Tree or Graph structures and many more
 
-## Why Drawit?
-- Based on React 16 so plays very well in the React Ecosystem
+# Why Drawit?
+- Uses React 16 under the hood so plays very well in the React Ecosystem
 - No Dependencies
 - Tiny Size (~40KB)
 - Interactive
