@@ -1,4 +1,4 @@
-# drawit
+<img src="logo.svg" width="200px">
 
 [![Travis][build-badge]][build]
 [![npm package][npm-badge]][npm]
