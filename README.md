@@ -37,3 +37,6 @@ API documentation is grouped by available components.
 
 ## Diagram
 Diagram is the root component of the system.
+
+# Acknowledgements
+Thanks to [Rabia Ashfaq](http://www.rabiaashfaq.com/) for designing the icon+logo.
