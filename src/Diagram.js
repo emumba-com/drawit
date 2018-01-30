@@ -20,6 +20,7 @@ import type {
 
 type Props = {
     value: any,
+    style: Object,
     logLevel: LogLevel,
     onChange: Function,
     children?: React.Node
