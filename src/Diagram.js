@@ -8,14 +8,14 @@ import { LayerNodes, LayerLinks } from './layers'
 import { makeUID, toCache, DragContext, createValueBuilder, createLogger } from './utils'
 import type {
     Configuration,
-    NodeSpecification,
-    LinkSpecification,
-    NodeModel,
-    LinkModel,
-    PortModel,
-    PointModel,
-    LogLevel,
-    Logger
+        NodeSpecification,
+        LinkSpecification,
+        NodeModel,
+        LinkModel,
+        PortModel,
+        PointModel,
+        LogLevel,
+        Logger
 } from './types'
 
 type Props = {
@@ -29,22 +29,22 @@ export default class Diagram extends React.Component<Props> {
     logger: Logger;
     conf: Configuration;
     valueBuilder: any;
-    
-    constructor( props:Props ) {
+
+    constructor(props: Props) {
         super(props)
 
         this.updateConf(props)
     }
 
-    addNode( spec: NodeSpecification ) {
+    addNode(spec: NodeSpecification) {
         this.valueBuilder()
-            .addNode( spec )
+            .addNode(spec)
             .apply()
     }
 
-    addLink( spec: LinkSpecification ) {
+    addLink(spec: LinkSpecification) {
         this.valueBuilder()
-            .addLink( spec )
+            .addLink(spec)
             .apply()
     }
 
@@ -62,24 +62,24 @@ export default class Diagram extends React.Component<Props> {
             ...value,
             [entityKey]: nextEntityModels
         })
-        .apply()
+            .apply()
     }
-    
+
     // TODO make this an external func
     handleChangeNodeModel = (model: NodeModel) => this.handleChangeEntityModel('nodes', model)
     handleChangeLinkModel = (model: LinkModel) => this.handleChangeEntityModel('links', model)
     handleChangePointModel = (model: PointModel) => this.handleChangeEntityModel('points', model)
     handleChangePortModel = (model: PortModel) => this.handleChangeEntityModel('ports', model)
 
-    componentWillReceiveProps( nextProps: Props ) {
+    componentWillReceiveProps(nextProps: Props) {
         // console.log(`[Diagram/componentWillReceiveProps] invoked ...`)
-        this.updateConf( nextProps )
+        this.updateConf(nextProps)
     }
 
-    updateConf( props: Props ) {
+    updateConf(props: Props) {
         const { onChange, value, logLevel = 'silent' } = props
 
-        this.logger = createLogger( logLevel )
+        this.logger = createLogger(logLevel)
         this.conf = buildConf(props)
         this.valueBuilder = createValueBuilder({
             value,
@@ -87,31 +87,30 @@ export default class Diagram extends React.Component<Props> {
             conf: this.conf,
             logger: this.logger
         })
-
         // console.log(`[updateConf] conf: `, this.conf)
     }
 
     render() {
-        const { value: pValue = {}, children } = this.props
+        const { value: pValue = {}, children, style } = this.props
         const value = { nodes: {}, links: {}, ports: {}, points: {}, ...pValue }
 
         // console.log(`[Diagram] Created conf: `, conf)
         // console.log(`[Diagram/render] invoked ...`)
 
         return (
-            <div className="Drawit--Diagram">
+            <div className="Drawit--Diagram" style={style}>
                 <DragContext logger={this.logger}>
                     <LayerNodes
                         logger={this.logger}
                         conf={this.conf}
                         value={value}
-                        onChangeEntityModel={ this.handleChangeEntityModel }/>
+                        onChangeEntityModel={this.handleChangeEntityModel} />
                     <LayerLinks
                         logger={this.logger}
                         conf={this.conf}
                         value={value}
                         valueBuilder={this.valueBuilder}
-                        onChangeEntityModel={ this.handleChangeEntityModel }/>
+                        onChangeEntityModel={this.handleChangeEntityModel} />
                 </DragContext>
             </div>
         )
