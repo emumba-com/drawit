@@ -38,5 +38,9 @@ API documentation is grouped by available components.
 ## Diagram
 Diagram is the root component of the system.
 
+# Contributors
+- [Ahmed Waleed](https://github.com/aw-yt)
+- [Umar Ashfaq](https://github.com/umarashfaq)
+
 # Acknowledgements
 Thanks to [Rabia Ashfaq](http://www.rabiaashfaq.com/) for designing the icon+logo.
