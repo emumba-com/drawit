@@ -139,4 +139,54 @@ describe('utils/valueBuilder', () => {
         const finalPort = nextValue.ports[finalDockTarget]
         expect(finalPort.dockedPoints).toInclude(pointID)
     })
+
+    it('updates a node correctly', () => {
+        let nextValue = value
+        const nodeID = '3f173971-3c81-4f4a-90a8-65f6a3a880e5'
+        
+        // verify initial value not to be zero
+        const {
+            x:     initX,
+            y:     initY,
+            type:  initType,
+            id:    initID,
+            ports: initPorts,
+        } = nextValue.nodes[nodeID]
+
+        expect(initX).toNotBe(0)
+        expect(initY).toNotBe(0)
+        expect(initType).toNotBe('execution')
+        expect(initID).toBe(nodeID)
+        expect(initPorts).toNotBe('dummy')
+
+        // update values with builder
+        createValueBuilder({
+            value,
+            onChange: _nextValue_ => {
+                nextValue = _nextValue_
+            },
+            conf 
+        })()
+        .updateNode(nodeID, {
+            // attempt updating non-referential data
+            x: 0,
+            y: 0,
+            type: 'execution',
+
+            // attempt updating referential data
+            id: 'dummy',
+            ports: 'dummy'
+        })
+        .apply()
+
+        // verify if values are correctly updated
+        const { id, x, y, type, ports } = nextValue.nodes[nodeID]
+        expect(x).toBe(0)
+        expect(y).toBe(0)
+        expect(type).toBe('execution')
+
+        // referential data shouldn't be updated
+        expect(id).toBe(initID)
+        expect(ports).toBe(initPorts)
+    })
 })

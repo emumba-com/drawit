@@ -11,6 +11,22 @@ export const toCache = array => array.reduce((output, item) => {
     return output
 }, {})
 
+/**
+ * Returns a shallow copy of an object, without key/values specified by rest
+ * of the arguments
+ * 
+ * @param {Object} object 
+ * @param {Array<string>} keys 
+ * @return {Object} - A shallow copy of input object without key/values provided
+ */
+export const without = (object, ...keys) =>
+    Object.keys(object)
+        .filter(key => keys.indexOf(key) < 0)
+        .reduce((r, key) => {
+            r[key] = object[key]
+            return r
+        }, {})
+
 export const isPointWithinRect = (p, r) => {
     const o = p.x > r.x && p.x < (r.x + r.width) && p.y > r.y && p.y < (r.y + r.height)
     // console.log(`is p[${p.x}, ${p.y}] within r[${r.x}, ${r.y}, ${r.width}, ${r.height}] = ${o}`)

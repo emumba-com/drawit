@@ -1,6 +1,6 @@
 /* @flow */
 
-import { makeUID, toCache } from './utils'
+import { makeUID, toCache, without } from './utils'
 import type {
     PointSpecification,
     PortSpecification,
@@ -206,8 +206,8 @@ export default ({
             throw `Node with ID[${id}] was not found`
         }
 
-        const { x = model.x, y = model.y } = spec
-        const safeSpec = { x, y }
+        // const { id: specID, ports, ...rest } = spec
+        const safeSpec = without(spec, 'id', 'ports')
         const nextModel = {
             ...model,
             ...safeSpec
