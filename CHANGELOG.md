@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Diagram's valueBuilder reference to node components
+- Ability to update any node props except referential data (with valueBuilder)
+- Ability to update any point props except referential data (with valueBuilder)
 
 ## [1.2.1] - 2018-01-30
 ### Added
