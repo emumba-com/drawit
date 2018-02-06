@@ -39,9 +39,24 @@ describe('utils/valueBuilder', () => {
         const pointID = '61c3c50b-f2ee-45a4-8d91-74e7941ff5a7'
         
         // verify initial value not to be zero
-        const { x: initX, y: initY } = nextValue.points[pointID]
+        const {
+            // non-referential data
+            x:          initX,
+            y:          initY,
+            type:       initType,
+
+            // referential data
+            id:         initID,
+            parentID:   initParentID,
+            dockTarget: initDockTarget
+        } = nextValue.points[pointID]
+
         expect(initX).toNotBe(0)
         expect(initY).toNotBe(0)
+        expect(initType).toNotBe('dummy')
+        expect(initID).toNotBe('dummy')
+        expect(initParentID).toNotBe('dummy')
+        expect(initDockTarget).toNotBe('dummy')
 
         // update values with builder
         createValueBuilder({
@@ -52,15 +67,28 @@ describe('utils/valueBuilder', () => {
             conf 
         })()
         .updatePoint(pointID, {
-            x: 0,
-            y: 0
+            // attempt updating non-referential data
+            x:          0,
+            y:          0,
+            type:       'dummy',
+
+            // attempt updating referential data
+            id:         'dummy',
+            parentID:   'dummy',
+            dockTarget: 'dummy'
         })
         .apply()
 
         // verify if values are correctly updated
-        const { x, y } = nextValue.points[pointID]
+        const { x, y, type, id, parentID, dockTarget } = nextValue.points[pointID]
         expect(x).toBe(0)
         expect(y).toBe(0)
+        expect(type).toBe('dummy')
+
+        // referential data should remain the same
+        expect(id).toNotBe('dummy')
+        expect(parentID).toNotBe('dummy')
+        expect(dockTarget).toNotBe('dummy')
     })
 
     it('undocks a point correctly', () => {

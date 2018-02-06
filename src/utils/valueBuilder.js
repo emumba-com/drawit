@@ -256,8 +256,8 @@ export default ({
             throw `Point with ID[${id}] was not found`
         }
 
-        const { x = model.x, y = model.y } = spec
-        const safeSpec = { x, y }
+        // const { x = model.x, y = model.y } = spec
+        const safeSpec = without(spec, 'id', 'parentID', 'dockTarget')
         const nextModel = {
             ...model, ...safeSpec
         }
