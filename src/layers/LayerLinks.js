@@ -10,7 +10,9 @@ export default class LayerLinks extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,
         value: PropTypes.object.isRequired,
-        onChangeEntityModel: PropTypes.func.isRequired
+        onChangeEntityModel: PropTypes.func.isRequired,
+        logger: PropTypes.object.isRequired,
+        valueBuilder: PropTypes.func.isRequired
     }
     componentDidMount() {
         const ref = ReactDOM.findDOMNode(this)

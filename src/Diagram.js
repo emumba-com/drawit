@@ -105,6 +105,7 @@ export default class Diagram extends React.Component<Props> {
                         logger={this.logger}
                         conf={this.conf}
                         value={value}
+                        valueBuilder={this.valueBuilder}
                         onChangeEntityModel={this.handleChangeEntityModel} />
                     <LayerLinks
                         logger={this.logger}

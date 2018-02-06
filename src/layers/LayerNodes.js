@@ -10,7 +10,9 @@ export default class LayerNodes extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,
         value: PropTypes.object.isRequired,
-        onChangeEntityModel: PropTypes.func.isRequired
+        onChangeEntityModel: PropTypes.func.isRequired,
+        logger: PropTypes.object.isRequired,
+        valueBuilder: PropTypes.func.isRequired
     }
     componentDidMount() {
         const ref = ReactDOM.findDOMNode(this)
@@ -24,7 +26,7 @@ export default class LayerNodes extends React.Component {
 
     render() {
         const { offsetX, offsetY } = this.state
-        const { conf, value, onChangeEntityModel } = this.props
+        const { conf, value, onChangeEntityModel, valueBuilder } = this.props
         const { nodes } = value
         const { enableDragging } = conf
         return (
@@ -43,6 +45,7 @@ export default class LayerNodes extends React.Component {
                             enableDragging={enableDragging}
                             offsetX={offsetX}
                             offsetY={offsetY}
+                            valueBuilder={valueBuilder}
                             onChangeEntityModel={onChangeEntityModel}
                         />
                     )

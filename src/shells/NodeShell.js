@@ -31,18 +31,24 @@ export default class NodeShell extends React.Component {
         offsetX: PropTypes.number,
         offsetY: PropTypes.number,
         onChangeEntityModel: PropTypes.func,
+        valueBuilder: PropTypes.func.isRequired,
 
         // inserted by draggable
         isDragging: PropTypes.bool
     }
     render() {
-        const { value, model, conf, offsetX, offsetY, isDragging } = this.props
+        const { value, model, conf, offsetX, offsetY, isDragging, valueBuilder } = this.props
         const { positions, component: NodeComponent } = conf
         // const { component: NodeComponent, children } = node.props
         // const ports = children ? React.Children.toArray(children).filter(child => child.type === Port) : []
         return (
             <div className="Drawit--NodeShell">
-                <NodeComponent value={value} model={model} isDragging={isDragging}/>
+                <NodeComponent
+                    value={value}
+                    valueBuilder={valueBuilder}
+                    model={model}
+                    isDragging={isDragging}
+                />
                 {
                     Object.keys(positions).map(key => {
                         const position = positions[key]
