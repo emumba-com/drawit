@@ -166,7 +166,7 @@ export default ({
 
     const builder = {}
     const contextObjects = []
-    let nextValue = initialValue || value || {}
+    let nextValue: DiagramModel = initialValue || value || {}
 
     const evaluate = (param) => {
         if ( typeof param === 'function' ) {
@@ -245,6 +245,44 @@ export default ({
         }
 
         contextObjects.push( model )
+
+        return builder
+    }
+
+    const removePoint = ( id: string ) => {
+        const model = nextValue.points[id]
+        const { [id]: thisPoint, ...remainingPoints } = nextValue.points
+        const parentLink = nextValue.links[thisPoint.parentID]
+        parentLink.points = without(parentLink.points, id)
+
+        nextValue = {
+            ...nextValue,
+            points: {
+                ...remainingPoints
+            },
+            links: {
+                ...nextValue.links,
+                [parentLink.id]: parentLink
+            }
+        }
+
+        if ( thisPoint.dockTarget ) {
+            const targetPort = nextValue.ports[thisPoint.dockTarget]
+            targetPort.dockedPoints = without(targetPort.dockedPoints, id)
+
+            nextValue = {
+                ...nextValue,
+                ports: {
+                    ...nextValue.ports,
+                    [targetPort.id]: targetPort
+                }
+            }
+        }
+
+        return builder
+    }
+    
+    const removeLink = ( id: string ) => {
 
         return builder
     }
@@ -380,7 +418,16 @@ export default ({
     }
 
     Object.assign(builder, {
-        addNode, addLink, updateNode, updatePoint, dock, undock, replace, apply
+        addNode,
+        addLink,
+        removePoint,
+        removeLink,
+        updateNode,
+        updatePoint,
+        dock,
+        undock,
+        replace,
+        apply
     })
 
     return builder

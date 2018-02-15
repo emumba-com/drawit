@@ -31,7 +31,8 @@ export type NodeModel = {
 
 export type LinkModel = {
     id: string,
-    type: string
+    type: string,
+    points: Array<string>
 }
 
 export type PortModel = {

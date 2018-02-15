@@ -20,12 +20,15 @@ export const toCache = array => array.reduce((output, item) => {
  * @return {Object} - A shallow copy of input object without key/values provided
  */
 export const without = (object, ...keys) =>
-    Object.keys(object)
-        .filter(key => keys.indexOf(key) < 0)
-        .reduce((r, key) => {
-            r[key] = object[key]
-            return r
-        }, {})
+    Array.isArray(object)
+        ? object
+            .filter(item => keys.indexOf(item) < 0)
+        : Object.keys(object)
+            .filter(key => keys.indexOf(key) < 0)
+            .reduce((r, key) => {
+                r[key] = object[key]
+                return r
+            }, {})
 
 export const isPointWithinRect = (p, r) => {
     const o = p.x > r.x && p.x < (r.x + r.width) && p.y > r.y && p.y < (r.y + r.height)

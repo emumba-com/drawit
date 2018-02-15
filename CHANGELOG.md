@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Diagram's valueBuilder reference to node components
 - Ability to update any node props except referential data (with valueBuilder)
 - Ability to update any point props except referential data (with valueBuilder)
+- Ability to remove a point (with valueBuilder)
 
 ## [1.2.1] - 2018-01-30
 ### Added

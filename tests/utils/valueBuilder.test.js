@@ -217,4 +217,44 @@ describe('utils/valueBuilder', () => {
         expect(id).toBe(initID)
         expect(ports).toBe(initPorts)
     })
+
+    it('removes a point correctly', () => {
+        let nextValue = value
+        const pointID = '61c3c50b-f2ee-45a4-8d91-74e7941ff5a7'
+        
+        // undock the point from any port
+        // remove it        
+
+        expect(value.points).toIncludeKey(pointID)
+
+        const {
+            parentID,
+            dockTarget
+        } = nextValue.points[pointID]
+
+        const initParentLink = value.links[parentID]
+        const initTargetPort = value.ports[dockTarget]
+
+        expect(initParentLink.points).toInclude(pointID)
+        expect(initTargetPort.dockedPoints).toInclude(pointID)
+        
+        // update values with builder
+        createValueBuilder({
+            value,
+            onChange: _nextValue_ => {
+                nextValue = _nextValue_
+            },
+            conf 
+        })()
+        .removePoint(pointID)
+        .apply()
+
+        // verify if values are correctly updated
+        const parentLink = nextValue.links[parentID]
+        const targetPort = nextValue.ports[dockTarget]
+
+        expect(nextValue.points).toExcludeKey(pointID)
+        expect(parentLink.points).toExclude(pointID)
+        expect(targetPort.dockedPoints).toExclude(pointID)
+    })
 })
