@@ -257,4 +257,50 @@ describe('utils/valueBuilder', () => {
         expect(parentLink.points).toExclude(pointID)
         expect(targetPort.dockedPoints).toExclude(pointID)
     })
+
+    it('removes a link correctly', () => {
+        let nextValue = value
+        const linkID = '8541311f-9ac9-4457-b307-22eb300d6972'
+        const link = nextValue.links[linkID]
+
+        const linkPoints = link.points
+        const dockTargets = {}
+
+        // undock the point from any port
+        // remove it        
+
+        expect(value.links).toIncludeKey(linkID)
+        link.points.forEach(pointID => {
+            expect(value.points).toIncludeKey(pointID)
+
+            const point = value.points[pointID]
+
+            if ( point.dockTarget ) {
+                const targetPort = value.ports[point.dockTarget]
+
+                dockTargets[pointID] = point.dockTarget
+                expect(targetPort.dockedPoints).toInclude(pointID)
+            }
+        })
+
+        // update values with builder
+        createValueBuilder({
+            value,
+            onChange: _nextValue_ => {
+                nextValue = _nextValue_
+            },
+            conf 
+        })()
+        .removeLink(linkID)
+        .apply()
+
+        expect(nextValue.links).toExcludeKey(linkID)
+        expect(nextValue.points).toExcludeKeys(linkPoints)
+
+        Object.keys(dockTargets).forEach(pointID => {
+            const portID = dockTargets[pointID]
+            const port = nextValue.ports[portID]
+            expect(port.dockedPoints).toExclude(pointID)
+        })
+    })
 })

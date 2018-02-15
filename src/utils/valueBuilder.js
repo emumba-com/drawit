@@ -283,6 +283,15 @@ export default ({
     }
     
     const removeLink = ( id: string ) => {
+        const link = nextValue.links[id]
+        const remainingLinks = without(nextValue.links, id)
+
+        link.points.forEach(removePoint)
+
+        nextValue = {
+            ...nextValue,
+            links: remainingLinks
+        }
 
         return builder
     }
