@@ -39,6 +39,7 @@ export type PortModel = {
     id: string,
     parentID: string,
     type: string,
+    position: string,
     dockedPoints?: Array<string>
 }
 

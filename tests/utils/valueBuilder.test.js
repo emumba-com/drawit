@@ -269,14 +269,14 @@ describe('utils/valueBuilder', () => {
         // undock the point from any port
         // remove it        
 
-        expect(value.links).toIncludeKey(linkID)
+        expect(nextValue.links).toIncludeKey(linkID)
         link.points.forEach(pointID => {
-            expect(value.points).toIncludeKey(pointID)
+            expect(nextValue.points).toIncludeKey(pointID)
 
-            const point = value.points[pointID]
+            const point = nextValue.points[pointID]
 
             if ( point.dockTarget ) {
-                const targetPort = value.ports[point.dockTarget]
+                const targetPort = nextValue.ports[point.dockTarget]
 
                 dockTargets[pointID] = point.dockTarget
                 expect(targetPort.dockedPoints).toInclude(pointID)
@@ -302,5 +302,51 @@ describe('utils/valueBuilder', () => {
             const port = nextValue.ports[portID]
             expect(port.dockedPoints).toExclude(pointID)
         })
+    })
+
+    it('removes a port correctly', () => {
+        let nextValue = value
+        console.log('target port: ', value.ports[portID])
+
+        const portID = '25d7949f-2799-4c90-b380-8693376304bf'
+        
+        // undock all the points from the port
+        // clear ref in parent node
+        // remove it        
+
+        expect(nextValue.ports).toIncludeKey(portID)
+
+        const {
+            parentID,
+            dockedPoints
+        } = nextValue.ports[portID]
+
+        const initParentNode = value.nodes[parentID]
+        console.log('port: ', nextValue.ports[portID])
+        console.log('dockedPoints: ', dockedPoints)
+        const initDockedPointModels = dockedPoints.map(pointID => value.points[pointID])
+
+        console.log('dockedPointModels: ', initDockedPointModels)
+        expect(initParentNode.ports.bottom).toBe(portID)
+        expect(initDockedPointModels.map(point => point.dockTarget)).toInclude(portID)
+        
+        // update values with builder
+        createValueBuilder({
+            value,
+            onChange: _nextValue_ => {
+                nextValue = _nextValue_
+            },
+            conf 
+        })()
+        .removePort(portID)
+        .apply()
+
+        // verify if values are correctly updated
+        const parentNode = nextValue.nodes[parentID]
+        const dockedPointModels = dockedPoints.map(pointID => nextValue.points[pointID])
+
+        expect(nextValue.ports).toExcludeKey(portID)
+        expect(parentNode.ports.bottom).toNotExist()
+        expect(dockedPointModels.map(point => point.dockTarget)).toExclude(portID)
     })
 })

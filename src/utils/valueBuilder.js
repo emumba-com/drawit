@@ -268,13 +268,15 @@ export default ({
 
         if ( thisPoint.dockTarget ) {
             const targetPort = nextValue.ports[thisPoint.dockTarget]
-            targetPort.dockedPoints = without(targetPort.dockedPoints, id)
 
             nextValue = {
                 ...nextValue,
                 ports: {
                     ...nextValue.ports,
-                    [targetPort.id]: targetPort
+                    [targetPort.id]: {
+                        ...targetPort,
+                        dockedPoints: without(targetPort.dockedPoints, id)
+                    }
                 }
             }
         }
@@ -291,6 +293,43 @@ export default ({
         nextValue = {
             ...nextValue,
             links: remainingLinks
+        }
+
+        return builder
+    }
+
+    const removePort = ( id: string ) => {
+        // undock all of the docked points
+        // remove reference from parent node
+        // remove item from list
+
+        const port = nextValue.ports[id]
+        const parentNode = nextValue.nodes[port.parentID]
+
+        nextValue = {
+            ...nextValue,
+            nodes: {
+                ...nextValue.nodes,
+                [parentNode.id]: {
+                    ...parentNode,
+                    ports: without(parentNode.ports, port.position)
+                }
+            },
+            ports: without(nextValue.ports, id)
+        }
+
+        if ( port.dockedPoints ) {
+            port.dockedPoints.forEach(pointID => {
+                const point = nextValue.points[pointID]
+
+                nextValue = {
+                    ...nextValue,
+                    points: {
+                        ...nextValue.points,
+                        [pointID]: without(point, 'dockTarget')
+                    }
+                }
+            })
         }
 
         return builder
@@ -431,6 +470,7 @@ export default ({
         addLink,
         removePoint,
         removeLink,
+        removePort,
         updateNode,
         updatePoint,
         dock,

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Ability to update any point props except referential data (with valueBuilder)
 - Ability to remove a point (with valueBuilder)
 - Ability to remove a link (with valueBuilder)
+- Ability to remove a port (with valueBuilder)
 
 ## [1.2.1] - 2018-01-30
 ### Added
