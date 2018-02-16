@@ -306,7 +306,7 @@ describe('utils/valueBuilder', () => {
 
     it('removes a port correctly', () => {
         let nextValue = value
-        console.log('target port: ', value.ports[portID])
+        // console.log('target port: ', value.ports[portID])
 
         const portID = '25d7949f-2799-4c90-b380-8693376304bf'
         
@@ -322,11 +322,11 @@ describe('utils/valueBuilder', () => {
         } = nextValue.ports[portID]
 
         const initParentNode = value.nodes[parentID]
-        console.log('port: ', nextValue.ports[portID])
-        console.log('dockedPoints: ', dockedPoints)
+        // console.log('port: ', nextValue.ports[portID])
+        // console.log('dockedPoints: ', dockedPoints)
         const initDockedPointModels = dockedPoints.map(pointID => value.points[pointID])
 
-        console.log('dockedPointModels: ', initDockedPointModels)
+        // console.log('dockedPointModels: ', initDockedPointModels)
         expect(initParentNode.ports.bottom).toBe(portID)
         expect(initDockedPointModels.map(point => point.dockTarget)).toInclude(portID)
         
@@ -348,5 +348,36 @@ describe('utils/valueBuilder', () => {
         expect(nextValue.ports).toExcludeKey(portID)
         expect(parentNode.ports.bottom).toNotExist()
         expect(dockedPointModels.map(point => point.dockTarget)).toExclude(portID)
+    })
+
+    it('removes a node correctly', () => {
+        let nextValue = value
+        const nodeID = '8ee71a4f-8ae3-4a62-bf11-e026ba47c5bd'
+        
+        // remove all ports
+        // remove node      
+
+        expect(nextValue.nodes).toIncludeKey(nodeID)
+
+        const {
+            ports
+        } = nextValue.nodes[nodeID]
+
+        expect(nextValue.ports).toIncludeKeys( Object.values(ports) )
+
+        // update values with builder
+        createValueBuilder({
+            value,
+            onChange: _nextValue_ => {
+                nextValue = _nextValue_
+            },
+            conf 
+        })()
+        .removeNode(nodeID)
+        .apply()
+
+        // verify if values are correctly updated
+        expect(nextValue.nodes).toExcludeKey(nodeID)
+        expect(nextValue.ports).toExcludeKeys( Object.values(ports) )
     })
 })

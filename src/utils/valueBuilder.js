@@ -335,6 +335,20 @@ export default ({
         return builder
     }
 
+    const removeNode = ( id: string ) => {
+        const node = nextValue.nodes[id]
+        
+        // $FlowFixMe
+        Object.values(node.ports).forEach(removePort)
+
+        nextValue = {
+            ...nextValue,
+            nodes: without(nextValue.nodes, id)
+        }
+
+        return builder
+    }
+
     const updatePoint = ( id: string, spec: PointSpecification ) => {
         const model = nextValue.points[id]
 
@@ -471,6 +485,7 @@ export default ({
         removePoint,
         removeLink,
         removePort,
+        removeNode,
         updateNode,
         updatePoint,
         dock,
