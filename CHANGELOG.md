@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Ability to remove a link (with valueBuilder)
 - Ability to remove a port (with valueBuilder)
 - Ability to remove a node (with valueBuilder)
+- Ability to retrieve a copy of latest internal value from valueBuilder
 
 ## [1.2.1] - 2018-01-30
 ### Added

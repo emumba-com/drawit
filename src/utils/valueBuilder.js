@@ -479,6 +479,8 @@ export default ({
         return builder
     }
 
+    const getValue = () => JSON.parse(JSON.stringify(nextValue))
+
     Object.assign(builder, {
         addNode,
         addLink,
@@ -491,7 +493,8 @@ export default ({
         dock,
         undock,
         replace,
-        apply
+        apply,
+        value: getValue
     })
 
     return builder
