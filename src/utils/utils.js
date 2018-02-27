@@ -12,8 +12,8 @@ export const toCache = array => array.reduce((output, item) => {
 }, {})
 
 /**
- * Returns a shallow copy of an object, without key/values specified by rest
- * of the arguments
+ * Returns a shallow copy of an object/array, without key/values specified by rest
+ * of the arguments.
  * 
  * @param {Object} object 
  * @param {Array<string>} keys 
@@ -29,6 +29,18 @@ export const without = (object, ...keys) =>
                 r[key] = object[key]
                 return r
             }, {})
+
+export const intersection = (a, b) => {
+    const s = new Set(b)
+
+    return a.filter(x => s.has(x))
+}
+
+export const difference = (a, b) => {
+    const s = new Set(b)
+
+    return a.filter(x => !s.has(x))
+}
 
 export const isPointWithinRect = (p, r) => {
     const o = p.x > r.x && p.x < (r.x + r.width) && p.y > r.y && p.y < (r.y + r.height)

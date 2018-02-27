@@ -1,6 +1,6 @@
 /* @flow */
 
-import { makeUID, toCache, without } from './utils'
+import { makeUID, toCache, without, difference, intersection } from './utils'
 import type {
     PointSpecification,
     PortSpecification,
@@ -199,6 +199,85 @@ export default ({
         return builder
     }
 
+    /**
+     * Updates a node's type, and takes care of all of the side effects.
+     * 
+     * @param {string} id - Node ID
+     * @param {string} type - The type that is needed to be set.
+     * @return {Object} - Current ValueBuilder instance
+     */
+    const updateNodeType = ( id: string, type: string ) => {
+        const model = nextValue.nodes[id]
+
+        if ( !model ) {
+            throw `Node with ID[${id}] was not found`
+        }
+
+        if ( !type || !type.trim() ) {
+            throw `Node with ID[${id}] cannot be set of type '${type}'`
+        }
+
+        if ( model.type === type ) {
+            throw `Node with ID[${id}] is already of type '${type}'`
+        }
+
+        // A = ports in the current type conf
+        // B = ports in the next type conf
+
+        // INTERSECTION(A, B) = ports to keep as they are
+        // A - B = ports to be deleted
+        // B - A = ports to be created
+
+        const prevPositions = conf.nodes[model.type].positions
+        const prevPositionKeys = Object.keys(prevPositions)
+
+        const nextPositions = conf.nodes[type].positions
+        const nextPositionKeys = Object.keys(nextPositions)
+
+        const common = intersection(prevPositionKeys, nextPositionKeys)
+        const toDelete = difference(prevPositionKeys, nextPositionKeys)
+        const toCreate = difference(nextPositionKeys, prevPositionKeys)
+        const portsCreated = {}
+        const portsCreatedByPositionKeys = {}
+
+        toDelete
+            .map(positionKey => model.ports[positionKey])
+            .forEach(removePort)
+
+        toCreate
+            .forEach(positionKey => {
+                const portConf = nextPositions[positionKey]
+                const portSpec = applyDefaultsToPortModelSpec({}, portConf)
+                const portModel = buildPortModel(portSpec, id)
+                portsCreated[portModel.id] = portModel
+                portsCreatedByPositionKeys[positionKey] = portModel.id
+            })
+
+        const nextModel = {
+            // ...model, // <-- expired by now, since it still contains deleted ports
+            ...nextValue.nodes[id],
+            type,
+            ports: {
+                ...nextValue.nodes[id].ports,
+                ...portsCreatedByPositionKeys
+            }
+        }
+
+        nextValue = {
+            ...nextValue,
+            nodes: {
+                ...nextValue.nodes,
+                [id]: nextModel
+            },
+            ports: {
+                ...nextValue.ports,
+                ...portsCreated
+            }
+        }
+
+        return builder
+    }
+
     const updateNode = ( id: string, spec: NodeSpecification ) => {
         const model = nextValue.nodes[id]
 
@@ -206,8 +285,7 @@ export default ({
             throw `Node with ID[${id}] was not found`
         }
 
-        // const { id: specID, ports, ...rest } = spec
-        const safeSpec = without(spec, 'id', 'ports')
+        const safeSpec = without(spec, 'id', 'ports', 'type')
         const nextModel = {
             ...model,
             ...safeSpec
@@ -221,7 +299,9 @@ export default ({
             }
         }
         
-        // console.log(`[updateNode] nextModel: `, nextModel, ', nextValue: ', nextValue)
+        if ( spec.type && model.type !== spec.type ) {
+            updateNodeType(model.id, spec.type)
+        }
 
         return builder
     }
@@ -489,11 +569,13 @@ export default ({
         removePort,
         removeNode,
         updateNode,
+        updateNodeType,
         updatePoint,
         dock,
         undock,
         replace,
         apply,
+        evaluate,
         value: getValue
     })
 

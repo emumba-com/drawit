@@ -380,4 +380,8 @@ describe('utils/valueBuilder', () => {
         expect(nextValue.nodes).toExcludeKey(nodeID)
         expect(nextValue.ports).toExcludeKeys( Object.values(ports) )
     })
+
+    it('updates a node type correctly', () => {
+        // TODO implement this
+    })
 })
