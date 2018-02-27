@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Ability to remove a port (with valueBuilder)
 - Ability to remove a node (with valueBuilder)
 - Ability to retrieve a copy of latest internal value from valueBuilder
+- Externalizes `evaluate` function in valueBuilder, which can be used to grab newly created models.
+- Ability to handle side effects (maintaining port models) when updating a node type
+
+### Fixed
+- When a port model is created, it doesn't carry any value for `position` key
 
 ## [1.2.1] - 2018-01-30
 ### Added

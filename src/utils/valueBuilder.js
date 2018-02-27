@@ -85,12 +85,13 @@ const applyDefaultsToPointModelSpec = (spec: PointSpecification, index: number, 
     }
 }
 
-const buildPortModel = (spec: PortSpecification, parentID: string): PortModel => {
+const buildPortModel = (spec: PortSpecification, parentID: string, position: string): PortModel => {
     const id = makeUID()
 
     return {
         id,
         parentID,
+        position,
         ...spec
     }
 }
@@ -108,7 +109,7 @@ const buildNodeModel = (spec: NodeSpecification): { model: NodeModel, ports: Por
         .entries(spec.ports)
         .forEach(([key, portModelSpec]) => {
             // $FlowFixMe
-            const port = buildPortModel( portModelSpec, id )
+            const port = buildPortModel( portModelSpec, id, key )
             ports.push( port )
 
             model.ports[key] = port.id
@@ -248,7 +249,8 @@ export default ({
             .forEach(positionKey => {
                 const portConf = nextPositions[positionKey]
                 const portSpec = applyDefaultsToPortModelSpec({}, portConf)
-                const portModel = buildPortModel(portSpec, id)
+                const portModel = buildPortModel(portSpec, id, positionKey)
+
                 portsCreated[portModel.id] = portModel
                 portsCreatedByPositionKeys[positionKey] = portModel.id
             })
