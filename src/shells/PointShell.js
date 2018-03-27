@@ -79,7 +79,7 @@ export default class PointShell extends React.Component {
     static propTypes = {
         conf: PropTypes.object.isRequired,
         model: PropTypes.object.isRequired,
-        onChangeEntityModel: PropTypes.isRequired,
+        onChangeEntityModel: PropTypes.func.isRequired,
 
         // injected by @draggable
         isSnapped: PropTypes.bool,
