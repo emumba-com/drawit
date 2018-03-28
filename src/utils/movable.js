@@ -203,13 +203,13 @@ export default (pOptions: HOCOptions = {}) => (WrappedElement: Class<React$Compo
                     <Observer event="drag" id={model.id} handler={this.handleDrag}/>
                     <Observer event="drag-end" id={model.id} handler={this.handleDragEnd}/>
                     {
-                      getDockTargets(this.props).map(id => (
-                          <span>
-                              <Observer event="drag-start" id={id} handler={this.handleDockTargetDragStart}/>
-                              <Observer event="drag" id={id} handler={this.handleDockTargetDrag}/>
-                              <Observer event="drag-end" id={id} handler={this.handleDockTargetDragEnd}/>
-                          </span>
-                      ))
+                        getDockTargets(this.props).map(id => (
+                            <span key={id}>
+                                <Observer event="drag-start" id={id} handler={this.handleDockTargetDragStart}/>
+                                <Observer event="drag" id={id} handler={this.handleDockTargetDrag}/>
+                                <Observer event="drag-end" id={id} handler={this.handleDockTargetDragEnd}/>
+                            </span>
+                        ))
                     }
                 </DraggableElement>
               )
