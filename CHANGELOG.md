@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - When a port model is created, it doesn't carry any value for `position` key
+- React's warnings in console
 
 ## [1.2.1] - 2018-01-30
 ### Added
