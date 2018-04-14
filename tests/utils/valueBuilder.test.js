@@ -8,7 +8,16 @@ import sampleValue from './sampleValue'
 describe('utils/valueBuilder', () => {
     const value = sampleValue
     const onChange = () => {}
-    const conf = {}
+    const conf = {
+        nodes: {
+            start: {
+                positions: {}
+            },
+            execution: {
+                positions: {}
+            }
+        }
+    }
 
     it('exists', () => {
         expect(createValueBuilder).toExist()
@@ -215,7 +224,7 @@ describe('utils/valueBuilder', () => {
 
         // referential data shouldn't be updated
         expect(id).toBe(initID)
-        expect(ports).toBe(initPorts)
+        expect(ports).toEqual(initPorts) // toBe(initPorts)
     })
 
     it('removes a point correctly', () => {
