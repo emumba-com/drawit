@@ -169,7 +169,7 @@ export default ({
     const contextObjects = []
     let nextValue: DiagramModel = initialValue || value || {}
 
-    const evaluate = (param) => {
+    const evaluate = (param:any) => {
         if ( typeof param === 'function' ) {
             return param.apply(null, [...contextObjects, nextValue])
         }
